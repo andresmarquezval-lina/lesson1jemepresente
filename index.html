@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leçon 1 : Bonjour, je me présente - Cours de Français A1</title>
+  
+  <!-- Tailwind CSS pour un design moderne -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    /* Styles pour la barre de défilement */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 px-4 py-3 md:px-8 shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-blue-600 text-white p-2 rounded-xl shadow-md shadow-blue-500/10">
+          <!-- Graduation Cap SVG -->
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-blue-600">Niveau A1 — Débutant</span>
+          <h1 class="text-sm md:text-lg font-extrabold text-slate-900 leading-none mt-0.5">LEÇON 1 : Bonjour, je me présente</h1>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <div class="hidden lg:flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-lg border border-amber-100 text-xs">
+          <!-- Speaker SVG -->
+          <svg class="w-4 h-4 animate-pulse shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z" />
+          </svg>
+          <span>Cliquez sur les phrases bleues pour écouter la prononciation !</span>
+        </div>
+        
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto relative">
+    
+    <!-- Sidebar Navigation - Desktop -->
+    <aside class="hidden md:block w-72 bg-white border-r border-slate-200 p-4 sticky top-[65px] h-[calc(100vh-65px)] overflow-y-auto">
+      <div class="space-y-1" id="desktopNav">
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Plan de la Leçon</h2>
+        <!-- Menu items dynamically rendered here -->
+      </div>
+      
+      <!-- Progress Indicator -->
+      <div class="mt-8 pt-6 border-t border-slate-100">
+        <div class="flex justify-between text-xs font-semibold text-slate-500 mb-2">
+          <span>Progression</span>
+          <span id="progressBarPercent">9%</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2">
+          <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 9%"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Sidebar Navigation - Mobile (Overlay) -->
+    <div id="mobileMenuOverlay" class="hidden fixed inset-0 top-[65px] z-40 bg-slate-900/40 backdrop-blur-sm">
+      <div class="w-4/5 max-w-xs bg-white h-full p-4 overflow-y-auto shadow-2xl flex flex-col justify-between">
+        <div class="space-y-1" id="mobileNav">
+          <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Plan de la Leçon</h2>
+          <!-- Mobile menu items dynamically rendered here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 md:p-8 max-w-4xl mx-auto w-full pb-24">
+      
+      <!-- Warning Banner Mobile -->
+      <div class="lg:hidden mb-6 flex items-center gap-2 bg-amber-50 text-amber-700 p-3 rounded-xl border border-amber-100 text-xs">
+        <svg class="w-4 h-4 animate-pulse shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z" />
+        </svg>
+        <span>Tapez sur les phrases bleues pour entendre la voix !</span>
+      </div>
+
+      <!-- Main Lesson Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
+        
+        <!-- Header of Content card -->
+        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+          <span id="pageIndicator" class="text-xs font-bold text-blue-600 uppercase tracking-widest">Page 1 sur 11</span>
+          <span id="pageTitle" class="text-sm font-semibold text-slate-700">1. Entrée & Vocabulaire</span>
+        </div>
+
+        <!-- Dynamic Content Body -->
+        <div id="lessonContent" class="p-6 md:p-8 flex-1">
+          <!-- Content will be injected dynamically -->
+        </div>
+
+        <!-- Content Card Footer (Back/Next arrows) -->
+        <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+          <button id="btnPrev" class="flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-slate-900 transition disabled:opacity-40">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            <span>Précédent</span>
+          </button>
+
+          <button id="btnNext" class="flex items-center gap-2 text-xs md:text-sm font-bold text-blue-600 hover:text-blue-800 transition disabled:opacity-40">
+            <span>Suivant</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Quick Info Box Bottom -->
+      <div class="mt-8 flex items-center justify-center gap-2 text-xs text-slate-400">
+        <span>Conçu pour l'apprentissage du Français Langue Étrangère (FLE) — A1.1</span>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // --- APP STATE ---
+    let currentPage = 1;
+    
+    // Pages definitions
+    const pages = [
+      { id: 1, title: "1. Entrée & Vocabulaire" },
+      { id: 2, title: "2. Saluer en français" },
+      { id: 3, title: "3. Prénom et Nom" },
+      { id: 4, title: "4. Dire son âge" },
+      { id: 5, title: "5. Pays et Ville" },
+      { id: 6, title: "6. Nationalité (M/F)" },
+      { id: 7, title: "7. Tu ou Vous ?" },
+      { id: 8, title: "8. Dialogue modèle" },
+      { id: 9, title: "9. Ma présentation" },
+      { id: 10, title: "10. Activité : Rencontres" },
+      { id: 11, title: "11. Petit Bilan" }
+    ];
+
+    // Interactive exercises state storage
+    const exerciseState = {
+      act1: { 'un prénom': '', 'un âge': '', 'un pays': '', 'une ville': '', 'une nationalité': '' },
+      act1Checked: false,
+      act2: { q1: '', q2: '', q3: '', q4: '' },
+      act2Checked: false,
+      act4: { q1: '', q2: '', q3: '', q4: '' },
+      act4Checked: false,
+      act5: { q1: '', q2: '', q3: '' },
+      act5Checked: false,
+      act6: { q1: '', q2: '', q3: '' },
+      act6Checked: false,
+      act7: { q1: '', q2: '', q3: '', q4: '' },
+      act7Checked: false,
+      act8: { q1: '', q2: '', q3: '', q4: '' },
+      act8Checked: false,
+      act9: { q1: '', q2: '', q3: '', q4: '', q5: '' },
+      act9Checked: false,
+      act10Tu: [],
+      act10Vous: [],
+      act10Checked: false,
+      act11: { q1: '', q2: '', q3: '', q4: '', q5: '' },
+      act11Checked: false,
+      presentation: { prenom: '', nom: '', age: '', genre: 'M', pays: '', ville: '', nationalite: '' },
+      classmates: [
+        { id: 1, prenom: '', age: '', pays: '', ville: '', genre: 'M' },
+        { id: 2, prenom: '', age: '', pays: '', ville: '', genre: 'F' },
+        { id: 3, prenom: '', age: '', pays: '', ville: '', genre: 'M' }
+      ],
+      bilan: { saluer: false, prenom: false, age: false, pays: false, ville: false, question: false, tuvous: false }
+    };
+
+    // --- SYNTHÈSE VOCALE (AUDIO) ---
+    function playAudio(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Stoppe l'audio en cours
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'fr-FR';
+        utterance.rate = 0.8; // Rythme idéal pour des débutants A1
+        window.speechSynthesis.speak(utterance);
+      } else {
+        console.warn("La synthèse vocale n'est pas supportée par ce navigateur.");
+      }
+    }
+
+    // --- UTILS / BUILDERS ---
+    function createPlayButton(text, translation = '') {
+      return `
+        <button onclick="playAudio('${text.replace(/'/g, "\\'")}')" 
+                class="group text-left inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 transition border border-blue-100/50 w-full md:w-auto">
+          <svg class="w-4 h-4 text-blue-600 group-hover:scale-110 transition shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z" />
+          </svg>
+          <div>
+            <span class="font-bold text-slate-800 text-sm">${text}</span>
+            ${translation ? `<span class="block text-xs text-slate-500 font-normal italic">${translation}</span>` : ''}
+          </div>
+        </button>
+      `;
+    }
+
+    // --- PAGE RENDERING ---
+    function renderPage() {
+      const contentDiv = document.getElementById('lessonContent');
+      document.getElementById('pageIndicator').innerText = `Page ${currentPage} sur 11`;
+      document.getElementById('pageTitle').innerText = pages[currentPage - 1].title;
+      
+      // Update sidebar active states
+      document.querySelectorAll('.nav-item').forEach(el => {
+        const id = parseInt(el.getAttribute('data-id'));
+        if (id === currentPage) {
+          el.className = "nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-sm font-medium transition bg-blue-600 text-white shadow-md";
+        } else {
+          el.className = "nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+        }
+      });
+
+      // Update progress bar
+      const progressPercent = Math.round((currentPage / 11) * 100);
+      document.getElementById('progressBar').style.width = `${progressPercent}%`;
+      document.getElementById('progressBarPercent').innerText = `${progressPercent}%`;
+
+      // Back/Next button states
+      document.getElementById('btnPrev').disabled = (currentPage === 1);
+      document.getElementById('btnNext').disabled = (currentPage === 11);
+
+      // Render corresponding page view
+      switch(currentPage) {
+        case 1: renderPage1(contentDiv); break;
+        case 2: renderPage2(contentDiv); break;
+        case 3: renderPage3(contentDiv); break;
+        case 4: renderPage4(contentDiv); break;
+        case 5: renderPage5(contentDiv); break;
+        case 6: renderPage6(contentDiv); break;
+        case 7: renderPage7(contentDiv); break;
+        case 8: renderPage8(contentDiv); break;
+        case 9: renderPage9(contentDiv); break;
+        case 10: renderPage10(contentDiv); break;
+        case 11: renderPage11(contentDiv); break;
+      }
+    }
+
+    // --- INDIVIDUAL PAGES ---
+
+    // Page 1: Entrée dans la leçon
+    function renderPage1(container) {
+      const correctAnswers = {
+        'un prénom': 'carte d’identité',
+        'un âge': 'gâteau d’anniversaire',
+        'un pays': 'drapeau / carte du monde',
+        'une ville': 'maisons / ville',
+        'une nationalité': 'groupe de personnes avec drapeaux'
+      };
+
+      let act1Score = 0;
+      if (exerciseState.act1Checked) {
+        Object.keys(correctAnswers).forEach(key => {
+          if (exerciseState.act1[key] === correctAnswers[key]) act1Score++;
+        });
+      }
+
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-4">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-950 flex items-center gap-2">
+              👋 Aujourd’hui, j’apprends à me présenter
+            </h3>
+            <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+              À la fin de la leçon, je peux dire mon prénom, mon âge, mon pays d'origine, ma ville et ma nationalité.
+            </p>
+          </div>
+
+          <!-- Tableau des objectifs -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div class="px-4 py-3 bg-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider grid grid-cols-2">
+              <span>Je peux dire...</span>
+              <span>Exemple (Cliquez pour écouter)</span>
+            </div>
+            <div class="divide-y divide-slate-200 text-sm">
+              <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                <span class="font-semibold text-slate-700">mon prénom</span>
+                ${createPlayButton("Je m'appelle Ali.", "My name is Ali.")}
+              </div>
+              <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                <span class="font-semibold text-slate-700">mon âge</span>
+                ${createPlayButton("J'ai 32 ans.", "I'm 32 years old.")}
+              </div>
+              <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                <span class="font-semibold text-slate-700">mon pays</span>
+                ${createPlayButton("Je viens de Syrie.", "I come from Syria.")}
+              </div>
+              <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                <span class="font-semibold text-slate-700">ma ville</span>
+                ${createPlayButton("J'habite à Mouscron.", "I live in Mouscron.")}
+              </div>
+              <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                <span class="font-semibold text-slate-700">ma nationalité</span>
+                <div class="flex flex-col gap-2">
+                  ${createPlayButton("Je suis syrien.", "I am Syrian (M)")}
+                  ${createPlayButton("Je suis syrienne.", "I am Syrian (F)")}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Les mots importants -->
+          <div class="space-y-3">
+            <h4 class="text-lg font-bold text-slate-900">Les mots importants</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              ${['un prénom', 'un nom', 'un âge', 'un pays', 'une ville', 'une nationalité'].map(word => `
+                <button onclick="playAudio('${word}')" class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-sm text-left transition">
+                  <span class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">🔊</span>
+                  <span class="font-bold text-slate-800 text-xs sm:text-sm">${word}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Encadré Visuel -->
+          <div class="bg-gradient-to-r from-blue-50 to-slate-50 border border-blue-100 rounded-xl p-5 relative overflow-hidden">
+            <h4 class="text-sm font-bold text-blue-700 uppercase tracking-widest mb-3 flex items-center gap-2">
+              🪪 Mon identité
+            </h4>
+            <ul class="space-y-2 text-sm text-slate-700 font-medium">
+              <li><span class="text-slate-400">Je m'appelle</span> [prénom]</li>
+              <li><span class="text-slate-400">J'ai</span> [âge] <span class="text-slate-400">ans.</span></li>
+              <li><span class="text-slate-400">Je viens de</span> [pays]</li>
+              <li><span class="text-slate-400">J'habite à</span> [ville]</li>
+            </ul>
+          </div>
+
+          <!-- Activité 1 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 1 — Je regarde, je comprends</div>
+            <p class="text-xs text-slate-500">Associez chaque mot important à son illustration ou sa description.</p>
+            
+            <div class="space-y-3">
+              ${Object.keys(correctAnswers).map(word => {
+                const userChoice = exerciseState.act1[word];
+                const isCorrect = userChoice === correctAnswers[word];
+                return `
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <span class="font-bold text-sm">${word}</span>
+                    <div class="flex items-center gap-2">
+                      <select id="act1Select_${word}" onchange="updateAct1('${word}', this.value)" class="bg-white border border-slate-300 text-sm rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 max-w-xs" ${exerciseState.act1Checked ? 'disabled' : ''}>
+                        <option value="">-- Choisir --</option>
+                        ${Object.values(correctAnswers).map(opt => `<option value="${opt}" ${userChoice === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                      </select>
+                      ${exerciseState.act1Checked ? (isCorrect ? '<span class="text-emerald-500">✓ Correct</span>' : '<span class="text-rose-500">✗ Incorrect</span>') : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="flex items-center gap-4 pt-2">
+              <button onclick="checkAct1()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">
+                Vérifier
+              </button>
+              ${exerciseState.act1Checked ? `
+                <div class="flex items-center gap-4">
+                  <span class="font-bold text-sm">Score : ${act1Score}/5</span>
+                  <button onclick="resetAct1()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateAct1 = function(word, value) {
+      exerciseState.act1[word] = value;
+    }
+    window.checkAct1 = function() {
+      exerciseState.act1Checked = true;
+      renderPage();
+    }
+    window.resetAct1 = function() {
+      exerciseState.act1 = { 'un prénom': '', 'un âge': '', 'un pays': '', 'une ville': '', 'une nationalité': '' };
+      exerciseState.act1Checked = false;
+      renderPage();
+    }
+
+    // Page 2: Saluer
+    function renderPage2(container) {
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">👋 Bonjour !</h3>
+            <p class="text-slate-600 text-sm">Nous choisissons notre façon de saluer en fonction du moment ou de la personne.</p>
+          </div>
+
+          <!-- Salutations -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            ${[
+              { sit: "Le matin", word: "Bonjour", translation: "Morning" },
+              { sit: "L'après-midi", word: "Bonjour", translation: "Afternoon" },
+              { sit: "Le soir", word: "Bonsoir", translation: "Evening" },
+              { sit: "Pour partir", word: "Au revoir", translation: "Goodbye" },
+              { sit: "Entre amis", word: "Salut", translation: "Hi/Bye" }
+            ].map(item => `
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center space-y-2">
+                <span class="text-xs font-bold text-slate-400 block uppercase tracking-wider">${item.sit}</span>
+                ${createPlayButton(item.word, item.translation)}
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Activité 2 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 2 — Je choisis</div>
+            <p class="text-xs text-slate-500">Complétez avec : <strong>Bonjour — Bonsoir — Au revoir — Salut</strong></p>
+
+            <div class="space-y-3 max-w-xl">
+              ${[
+                { id: "q1", sit: "Le matin, je dis :", correct: "Bonjour", choices: ["Bonjour", "Bonsoir", "Au revoir"] },
+                { id: "q2", sit: "À un ami, je dis :", correct: "Salut", choices: ["Bonjour", "Salut", "Bonsoir"] },
+                { id: "q3", sit: "Le soir, je dis :", correct: "Bonsoir", choices: ["Bonjour", "Salut", "Bonsoir"] },
+                { id: "q4", sit: "Je pars, je dis :", correct: "Au revoir", choices: ["Salut", "Au revoir", "Bonjour"] }
+              ].map(item => {
+                const userChoice = exerciseState.act2[item.id];
+                const isCorrect = userChoice === item.correct;
+                return `
+                  <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                    <span class="font-semibold">${item.sit}</span>
+                    <div class="flex items-center gap-2">
+                      <select id="act2Select_${item.id}" onchange="updateAct2('${item.id}', this.value)" class="bg-white border border-slate-300 text-xs rounded p-1.5" ${exerciseState.act2Checked ? 'disabled' : ''}>
+                        <option value="">Choisir...</option>
+                        ${item.choices.map(c => `<option value="${c}" ${userChoice === c ? 'selected' : ''}>${c}</option>`).join('')}
+                      </select>
+                      ${exerciseState.act2Checked ? (isCorrect ? '<span class="text-emerald-500 font-bold">✓</span>' : '<span class="text-rose-500 font-bold">✗</span>') : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct2()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act2Checked ? `<button onclick="resetAct2()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+
+          <!-- Activité 3 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 3 — Je parle avec mon voisin</div>
+            <p class="text-sm text-slate-500">Cliquez sur chaque phrase pour écouter et vous entraîner à haute voix avec votre voisin.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Version standard -->
+              <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-2">Formule Standard (Vous)</span>
+                <div class="space-y-2 text-sm">
+                  <p><strong>A:</strong> ${createPlayButton("Bonjour.")}</p>
+                  <p><strong>B:</strong> ${createPlayButton("Bonjour.")}</p>
+                  <p><strong>A:</strong> ${createPlayButton("Comment ça va ?")}</p>
+                  <p><strong>B:</strong> ${createPlayButton("Ça va bien, merci. Et vous ?")}</p>
+                  <p><strong>A:</strong> ${createPlayButton("Ça va.")}</p>
+                </div>
+              </div>
+
+              <!-- Version amicale -->
+              <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 block mb-2">Version Amicale (Tu)</span>
+                <div class="space-y-2 text-sm">
+                  <p><strong>A:</strong> ${createPlayButton("Salut !")}</p>
+                  <p><strong>B:</strong> ${createPlayButton("Salut !")}</p>
+                  <p><strong>A:</strong> ${createPlayButton("Ça va ?")}</p>
+                  <p><strong>B:</strong> ${createPlayButton("Oui, ça va.")}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateAct2 = function(qId, val) { exerciseState.act2[qId] = val; }
+    window.checkAct2 = function() { exerciseState.act2Checked = true; renderPage(); }
+    window.resetAct2 = function() { exerciseState.act2 = { q1: '', q2: '', q3: '', q4: '' }; exerciseState.act2Checked = false; renderPage(); }
+
+    // Page 3: Dire son prénom et son nom
+    function renderPage3(container) {
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">👨‍💼 Pour se présenter</h3>
+            <p class="text-slate-600 text-sm">Voici comment poser des questions sur le nom et le prénom et comment y répondre.</p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2 rounded-lg hover:bg-slate-100/50 transition">
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Question (Tu)</span>
+                ${createPlayButton("Comment tu t'appelles ?")}
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Réponse</span>
+                ${createPlayButton("Je m'appelle Nadia.")}
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2 rounded-lg hover:bg-slate-100/50 transition border-t border-slate-200/50">
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Question (Vous)</span>
+                ${createPlayButton("Vous vous appelez comment ?")}
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Réponse</span>
+                ${createPlayButton("Je m'appelle Mohamed.")}
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2 rounded-lg hover:bg-slate-100/50 transition border-t border-slate-200/50">
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Question</span>
+                ${createPlayButton("Quel est votre nom ?")}
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Réponse</span>
+                ${createPlayButton("Mon nom est Rahimi.")}
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2 rounded-lg hover:bg-slate-100/50 transition border-t border-slate-200/50">
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Question</span>
+                ${createPlayButton("Quel est votre prénom ?")}
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold block">Réponse</span>
+                ${createPlayButton("Mon prénom est Sara.")}
+              </div>
+            </div>
+          </div>
+
+          <!-- Attention -->
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800">
+            <strong>⚠️ Attention :</strong><br>
+            <strong>Prénom</strong> = Sara, Ali, Mohamed, Fatima (First name)<br>
+            <strong>Nom (de famille)</strong> = Rahimi, Dupont, Benali, Diallo (Family/Last name)
+          </div>
+
+          <!-- Activité 4 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 4 — Je complète</div>
+            <div class="space-y-3 max-w-lg text-sm">
+              ${[
+                { id: "q1", raw: "1. Je m'__________ Ali.", target: "appelle" },
+                { id: "q2", raw: "2. Mon pr__________ est Sara.", target: "prénom" },
+                { id: "q3", raw: "3. Mon n__________ est Diallo.", target: "nom" },
+                { id: "q4", raw: "4. Vous vous appelez c__________ ?", target: "comment" }
+              ].map(item => {
+                const isCorrect = exerciseState.act4[item.id].toLowerCase().trim() === item.target.toLowerCase().trim() || 
+                                 (item.id === "q2" && exerciseState.act4[item.id].toLowerCase().trim() === "prenom");
+                return `
+                  <div class="flex items-center justify-between gap-3 p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                    <span class="font-medium">${item.raw}</span>
+                    <div class="flex items-center gap-1">
+                      <input type="text" value="${exerciseState.act4[item.id]}" oninput="updateAct4('${item.id}', this.value)" placeholder="Réponse" class="border border-slate-300 p-1 rounded text-xs w-24 text-center" ${exerciseState.act4Checked ? 'disabled' : ''}>
+                      ${exerciseState.act4Checked ? (isCorrect ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct4()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act4Checked ? `<button onclick="resetAct4()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+
+          <!-- Activité 5 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 5 — Je pose la question</div>
+            <p class="text-xs text-slate-500">Écrivez la question correcte.</p>
+            
+            <div class="space-y-4 max-w-xl text-sm">
+              ${[
+                { id: "q1", label: "Je m'appelle Omar.", tips: ["comment tu t'appelles ?", "comment tu t'appelles", "comment vous vous appelez ?", "vous vous appelez comment ?", "comment vous vous appelez"] },
+                { id: "q2", label: "Mon prénom est Lina.", tips: ["quel est ton prénom ?", "quel est votre prénom ?", "quel est ton prenom", "quel est votre prenom"] },
+                { id: "q3", label: "Mon nom est Hassan.", tips: ["quel est ton nom ?", "quel est votre nom ?", "quel est ton nom", "quel est votre nom"] }
+              ].map(item => {
+                const isCorrect = item.tips.includes(exerciseState.act5[item.id].toLowerCase().trim().replace(/\s+/g, " "));
+                return `
+                  <div class="space-y-1 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <span class="text-xs text-slate-500 block">Réponse : — ${item.label}</span>
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold text-slate-700">—</span>
+                      <input type="text" value="${exerciseState.act5[item.id]}" oninput="updateAct5('${item.id}', this.value)" placeholder="Question ?" class="w-full border border-slate-300 p-1.5 rounded text-xs" ${exerciseState.act5Checked ? 'disabled' : ''}>
+                      ${exerciseState.act5Checked ? (isCorrect ? '<span class="text-emerald-500 font-bold">✓</span>' : '<span class="text-rose-500 font-bold">✗</span>') : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct5()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act5Checked ? `<button onclick="resetAct5()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateAct4 = function(id, val) { exerciseState.act4[id] = val; }
+    window.checkAct4 = function() { exerciseState.act4Checked = true; renderPage(); }
+    window.resetAct4 = function() { exerciseState.act4 = { q1: '', q2: '', q3: '', q4: '' }; exerciseState.act4Checked = false; renderPage(); }
+
+    window.updateAct5 = function(id, val) { exerciseState.act5[id] = val; }
+    window.checkAct5 = function() { exerciseState.act5Checked = true; renderPage(); }
+    window.resetAct5 = function() { exerciseState.act5 = { q1: '', q2: '', q3: '' }; exerciseState.act5Checked = false; renderPage(); }
+
+    // Page 4: Dire son âge
+    function renderPage4(container) {
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">🎂 L’âge</h3>
+            <p class="text-slate-600 text-sm">Écoutez les questions d'usage et apprenez les nombres utiles.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+              <span class="text-[10px] font-bold text-slate-400 block uppercase">Avec un ami (Tu)</span>
+              ${createPlayButton("Tu as quel âge ?")}<br>
+              ${createPlayButton("Quel âge as-tu ?")}
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+              <span class="text-[10px] font-bold text-slate-400 block uppercase font-bold">Poli / Administration (Vous)</span>
+              ${createPlayButton("Vous avez quel âge ?")}
+            </div>
+          </div>
+
+          <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl">
+            <span class="font-bold text-blue-800 text-xs block mb-1">Comment répondre ?</span>
+            ${createPlayButton("J'ai 25 ans.", "I'm 25 years old.")}
+          </div>
+
+          <!-- Nombres utiles -->
+          <div class="space-y-3">
+            <h4 class="text-base font-bold text-slate-900">Les nombres utiles (0 - 20)</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              ${[
+                { n: 0, w: "zéro" }, { n: 1, w: "un" }, { n: 2, w: "deux" }, { n: 3, w: "trois" }, { n: 4, w: "quatre" },
+                { n: 5, w: "cinq" }, { n: 6, w: "six" }, { n: 7, w: "sept" }, { n: 8, w: "huit" }, { n: 9, w: "neuf" },
+                { n: 10, w: "dix" }
+              ].map(item => `
+                <button onclick="playAudio('${item.w}')" class="flex items-center justify-between p-2.5 bg-white border border-slate-200 hover:border-blue-500 rounded-lg shadow-xs text-left group transition">
+                  <span class="font-bold text-blue-600 text-xs">${item.n}</span>
+                  <span class="text-slate-800 text-xs font-semibold">${item.w}</span>
+                </button>
+              `).join('')}
+            </div>
+
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                ${[
+                  { n: 11, w: "onze" }, { n: 12, w: "douze" }, { n: 13, w: "treize" }, { n: 14, w: "quatorze" }, { n: 15, w: "quinze" },
+                  { n: 16, w: "seize" }, { n: 17, w: "dix-sept" }, { n: 18, w: "dix-huit" }, { n: 19, w: "dix-neuf" }, { n: 20, w: "vingt" }
+                ].map(item => `
+                  <button onclick="playAudio('${item.w}')" class="flex items-center justify-between p-2.5 bg-white border border-slate-200 hover:border-blue-500 rounded-lg shadow-xs text-left group transition">
+                    <span class="font-bold text-blue-600 text-xs">${item.n}</span>
+                    <span class="text-slate-800 text-xs font-semibold">${item.w}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Activité 6 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 6 — Je réponds</div>
+            <div class="space-y-4 max-w-lg text-sm">
+              <div class="space-y-1">
+                <label class="font-semibold block">1. Tu as quel âge ?</label>
+                <div class="flex items-center gap-2">
+                  <span>→ J'ai</span>
+                  <input type="text" value="${exerciseState.act6.q1}" oninput="updateAct6('q1', this.value)" placeholder="ex: 25" class="border border-slate-300 p-1.5 rounded text-xs w-20 text-center" ${exerciseState.act6Checked ? 'disabled' : ''}>
+                  <span>ans.</span>
+                  ${exerciseState.act6Checked ? (exerciseState.act6.q1.trim() !== '' ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-semibold block">2. Vous avez quel âge ?</label>
+                <div class="flex items-center gap-2">
+                  <span>→ J'ai</span>
+                  <input type="text" value="${exerciseState.act6.q2}" oninput="updateAct6('q2', this.value)" placeholder="ex: 40" class="border border-slate-300 p-1.5 rounded text-xs w-20 text-center" ${exerciseState.act6Checked ? 'disabled' : ''}>
+                  <span>ans.</span>
+                  ${exerciseState.act6Checked ? (exerciseState.act6.q2.trim() !== '' ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-semibold block">3. Quel âge a Nadia ? (cf. Page 8 : Nadia a 29 ans)</label>
+                <div class="flex items-center gap-2">
+                  <span>→ Elle a</span>
+                  <input type="text" value="${exerciseState.act6.q3}" oninput="updateAct6('q3', this.value)" placeholder="ex: 29" class="border border-slate-300 p-1.5 rounded text-xs w-20 text-center" ${exerciseState.act6Checked ? 'disabled' : ''}>
+                  <span>ans.</span>
+                  ${exerciseState.act6Checked ? (["29", "vingt-neuf", "vingt neuf"].includes(exerciseState.act6.q3.toLowerCase().trim()) ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct6()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act6Checked ? `<button onclick="resetAct6()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateAct6 = function(id, val) { exerciseState.act6[id] = val; }
+    window.checkAct6 = function() { exerciseState.act6Checked = true; renderPage(); }
+    window.resetAct6 = function() { exerciseState.act6 = { q1: '', q2: '', q3: '' }; exerciseState.act6Checked = false; renderPage(); }
+
+    // Page 5: Pays et Ville
+    function renderPage5(container) {
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">🗺️ Dire son pays et sa ville</h3>
+            <p class="text-slate-600 text-sm">Écoutez et mémorisez les différences entre la provenance (pays) et l'adresse (ville).</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Le Pays -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+              <span class="text-xs font-bold text-blue-600 block uppercase tracking-wider">Le pays</span>
+              <div class="space-y-3 text-sm">
+                <div>
+                  <span class="text-slate-400 block text-xs">Tu viens d'où ?</span>
+                  ${createPlayButton("Tu viens d'où ?")}
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-xs">Vous venez d'où ?</span>
+                  ${createPlayButton("Vous venez d'où ?")}
+                </div>
+                <div class="pt-2 border-t border-slate-200/55">
+                  <span class="text-slate-500 font-bold text-xs block mb-1">Réponses possibles :</span>
+                  ${createPlayButton("Je viens de Syrie.")}<br>
+                  ${createPlayButton("Je viens d'Ukraine.")}<br>
+                  ${createPlayButton("Je suis du Maroc.")}
+                </div>
+              </div>
+            </div>
+
+            <!-- La Ville -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+              <span class="text-xs font-bold text-emerald-600 block uppercase tracking-wider">La ville</span>
+              <div class="space-y-3 text-sm">
+                <div>
+                  <span class="text-slate-400 block text-xs">Tu habites où ?</span>
+                  ${createPlayButton("Tu habites où ?")}
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-xs">Vous habitez où ?</span>
+                  ${createPlayButton("Vous habitez où ?")}
+                </div>
+                <div class="pt-2 border-t border-slate-200/55">
+                  <span class="text-slate-500 font-bold text-xs block mb-1">Réponses possibles :</span>
+                  ${createPlayButton("J'habite à Mouscron.")}<br>
+                  ${createPlayButton("J'habite à Tournai.")}<br>
+                  ${createPlayButton("J'habite à Bruxelles.")}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activité 7 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 7 — Je complète</div>
+            <p class="text-xs text-slate-500">Complétez avec : <strong>viens — habite — pays — ville</strong></p>
+
+            <div class="space-y-3 max-w-md text-sm">
+              ${[
+                { id: "q1", text: "1. Je ____________ de Guinée.", target: "viens" },
+                { id: "q2", text: "2. J'____________ à Mouscron.", target: "habite" },
+                { id: "q3", text: "3. Mon ____________ est l’Afghanistan.", target: "pays" },
+                { id: "q4", text: "4. Ma ____________ est Bruxelles.", target: "ville" }
+              ].map(item => {
+                const isCorrect = exerciseState.act7[item.id].toLowerCase().trim() === item.target.toLowerCase().trim();
+                return `
+                  <div class="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                    <span>${item.text}</span>
+                    <div class="flex items-center gap-1">
+                      <input type="text" value="${exerciseState.act7[item.id]}" oninput="updateAct7('${item.id}', this.value)" placeholder="..." class="border border-slate-300 p-1 rounded text-xs w-20 text-center" ${exerciseState.act7Checked ? 'disabled' : ''}>
+                      ${exerciseState.act7Checked ? (isCorrect ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct7()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act7Checked ? `<button onclick="resetAct7()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+
+          <!-- Activité 8 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 8 — Je relie</div>
+            
+            <div class="space-y-3 text-sm max-w-xl">
+              ${[
+                { id: "q1", quest: "Tu viens d’où ?", ans: "Je viens d’Irak.", choices: ["J’ai 30 ans.", "Je viens d’Irak.", "J’habite à Mouscron.", "Je m’appelle Ahmed."] },
+                { id: "q2", quest: "Tu habites où ?", ans: "J’habite à Mouscron.", choices: ["J’ai 30 ans.", "Je viens d’Irak.", "J’habite à Mouscron.", "Je m’appelle Ahmed."] },
+                { id: "q3", quest: "Tu as quel âge ?", ans: "J’ai 30 ans.", choices: ["J’ai 30 ans.", "Je viens d’Irak.", "J’habite à Mouscron.", "Je m’appelle Ahmed."] },
+                { id: "q4", quest: "Tu t’appelles comment ?", ans: "Je m’appelle Ahmed.", choices: ["J’ai 30 ans.", "Je viens d’Irak.", "J’habite à Mouscron.", "Je m’appelle Ahmed."] }
+              ].map(item => {
+                const isCorrect = exerciseState.act8[item.id] === item.ans;
+                return `
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
+                    <span class="font-bold text-blue-700">${item.quest}</span>
+                    <div class="flex items-center gap-2">
+                      <select id="act8Select_${item.id}" onchange="updateAct8('${item.id}', this.value)" class="bg-white border border-slate-300 rounded p-1 text-xs" ${exerciseState.act8Checked ? 'disabled' : ''}>
+                        <option value="">-- Choisir réponse --</option>
+                        ${item.choices.map(c => `<option value="${c}" ${exerciseState.act8[item.id] === c ? 'selected' : ''}>${c}</option>`).join('')}
+                      </select>
+                      ${exerciseState.act8Checked ? (isCorrect ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct8()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act8Checked ? `<button onclick="resetAct8()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateAct7 = function(id, val) { exerciseState.act7[id] = val; }
+    window.checkAct7 = function() { exerciseState.act7Checked = true; renderPage(); }
+    window.resetAct7 = function() { exerciseState.act7 = { q1: '', q2: '', q3: '', q4: '' }; exerciseState.act7Checked = false; renderPage(); }
+
+    window.updateAct8 = function(id, val) { exerciseState.act8[id] = val; }
+    window.checkAct8 = function() { exerciseState.act8Checked = true; renderPage(); }
+    window.resetAct8 = function() { exerciseState.act8 = { q1: '', q2: '', q3: '', q4: '' }; exerciseState.act8Checked = false; renderPage(); }
+
+    // Page 6: Nationalités
+    function renderPage6(container) {
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">🌍 Nationalité : masculin / féminin</h3>
+            <p class="text-slate-600 text-sm">Notez la différence à l'écoute entre l'homme (masculin) et la femme (féminin).</p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <div class="grid grid-cols-2 bg-slate-100 px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+              <span>Homme 👨</span>
+              <span>Femme 👩</span>
+            </div>
+            <div class="divide-y divide-slate-200 text-sm">
+              ${[
+                { m: "Je suis syrien.", f: "Je suis syrienne." },
+                { m: "Je suis ukrainien.", f: "Je suis ukrainienne." },
+                { m: "Je suis marocain.", f: "Je suis marocaine." },
+                { m: "Je suis turc.", f: "Je suis turque." },
+                { m: "Je suis belge.", f: "Je suis belge." },
+                { m: "Je suis français.", f: "Je suis française." }
+              ].map(item => `
+                <div class="grid grid-cols-2 p-3 gap-3">
+                  ${createPlayButton(item.m)}
+                  ${createPlayButton(item.f)}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 text-xs space-y-2">
+            <span class="font-bold text-blue-800 block">💡 Petit point langue :</span>
+            <p>Souvent, au féminin, on ajoute un <strong>-e</strong> à la fin :</p>
+            <ul class="list-disc list-inside space-y-1 text-slate-700">
+              <li>marocain ➔ marocaine</li>
+              <li>turc ➔ turque</li>
+              <li>syrien ➔ syrienne</li>
+            </ul>
+            <p class="pt-1">Parfois, le mot ne change pas s'il se termine déjà par un <strong>-e</strong> : <strong>belge ➔ belge</strong></p>
+          </div>
+
+          <!-- Activité 9 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 9 — Je choisis</div>
+            <div class="space-y-3 max-w-md text-sm">
+              ${[
+                { id: "q1", text: "1. Fatima est", correct: "marocaine", options: ["marocaine", "marocain"] },
+                { id: "q2", text: "2. Ali est", correct: "syrien", options: ["syrienne", "syrien"] },
+                { id: "q3", text: "3. Olga est", correct: "ukrainienne", options: ["ukrainien", "ukrainienne"] },
+                { id: "q4", text: "4. Mehmet est", correct: "turc", options: ["turque", "turc"] },
+                { id: "q5", text: "5. Anna est", correct: "belge", options: ["belge", "belges"] }
+              ].map(item => {
+                const userChoice = exerciseState.act9[item.id];
+                const isCorrect = userChoice === item.correct;
+                return `
+                  <div class="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                    <span>${item.text} :</span>
+                    <div class="flex items-center gap-2">
+                      <select id="act9Select_${item.id}" onchange="updateAct9('${item.id}', this.value)" class="bg-white border border-slate-300 rounded p-1 text-xs" ${exerciseState.act9Checked ? 'disabled' : ''}>
+                        <option value="">Choisir</option>
+                        ${item.options.map(o => `<option value="${o}" ${userChoice === o ? 'selected' : ''}>${o}</option>`).join('')}
+                      </select>
+                      ${exerciseState.act9Checked ? (isCorrect ? '<span class="text-emerald-500 font-bold">✓</span>' : '<span class="text-rose-500 font-bold">✗</span>') : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct9()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act9Checked ? `<button onclick="resetAct9()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateAct9 = function(id, val) { exerciseState.act9[id] = val; }
+    window.checkAct9 = function() { exerciseState.act9Checked = true; renderPage(); }
+    window.resetAct9 = function() { exerciseState.act9 = { q1: '', q2: '', q3: '', q4: '', q5: '' }; exerciseState.act9Checked = false; renderPage(); }
+
+    // Page 7: Tu ou Vous ?
+    function renderPage7(container) {
+      const allPhrases = [
+        "Salut !",
+        "Bonjour Madame.",
+        "Tu habites où ?",
+        "Vous habitez où ?",
+        "Tu as quel âge ?",
+        "Vous avez quel âge ?",
+        "Comment tu t'appelles ?",
+        "Vous vous appelez comment ?"
+      ];
+
+      // Filter available phrases
+      const availablePhrases = allPhrases.filter(ph => !exerciseState.act10Tu.includes(ph) && !exerciseState.act10Vous.includes(ph));
+
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">👥 Tu ou vous ?</h3>
+            <p class="text-slate-600 text-sm">Nous changeons les mots si nous parlons à une seule personne (Tu ou Vous de politesse).</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl space-y-2">
+              <span class="text-xs font-bold text-emerald-800 uppercase block">On dit TU à :</span>
+              <ul class="list-disc list-inside text-xs text-emerald-950 space-y-1">
+                <li>un ami</li>
+                <li>une personne jeune que je connais</li>
+                <li>la famille</li>
+                <li>un collègue proche</li>
+              </ul>
+              <div class="pt-2 border-t border-emerald-200">
+                ${createPlayButton("Salut, tu t'appelles comment ?")}
+              </div>
+            </div>
+
+            <div class="p-4 bg-blue-50/50 border border-blue-100 rounded-xl space-y-2">
+              <span class="text-xs font-bold text-blue-800 uppercase block">On dit VOUS à :</span>
+              <ul class="list-disc list-inside text-xs text-blue-950 space-y-1">
+                <li>un professeur</li>
+                <li>une personne que je ne connais pas</li>
+                <li>à l'administration</li>
+                <li>au médecin</li>
+              </ul>
+              <div class="pt-2 border-t border-blue-200">
+                ${createPlayButton("Bonjour, vous vous appelez comment ?")}
+              </div>
+            </div>
+          </div>
+
+          <!-- Activité 10 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 10 — Je classe</div>
+            <p class="text-xs text-slate-500">Classez les phrases dans la bonne colonne.</p>
+
+            <!-- Boite de choix -->
+            ${availablePhrases.length > 0 ? `
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-wrap gap-2">
+                ${availablePhrases.map(ph => `
+                  <div class="flex items-center gap-1 bg-white border border-slate-300 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs">
+                    <span>${ph}</span>
+                    <button onclick="moveToAct10('${ph}', 'tu')" class="ml-2 text-emerald-600 hover:text-emerald-800 font-bold">TU</button>
+                    <span class="text-slate-300">|</span>
+                    <button onclick="moveToAct10('${ph}', 'vous')" class="text-blue-600 hover:text-blue-800 font-bold">VOUS</button>
+                  </div>
+                `).join('')}
+              </div>
+            ` : '<p class="text-xs text-emerald-600 font-semibold bg-emerald-50 p-2 rounded">Toutes les phrases ont été classées !</p>'}
+
+            <!-- Colonnes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <!-- TU -->
+              <div class="p-4 bg-emerald-50/40 rounded-xl border border-emerald-100 min-h-[120px] space-y-1">
+                <span class="text-xs font-bold text-emerald-700 block mb-2 uppercase tracking-wide">Colonne TU</span>
+                ${exerciseState.act10Tu.map(ph => {
+                  const isCorrect = ["Salut !", "Tu habites où ?", "Tu as quel âge ?", "Comment tu t'appelles ?"].includes(ph);
+                  return `
+                    <div class="flex items-center justify-between p-1.5 bg-white border rounded text-xs">
+                      <span>${ph}</span>
+                      <div class="flex items-center gap-2">
+                        ${exerciseState.act10Checked ? (isCorrect ? '<span class="text-emerald-500 font-bold">✓</span>' : '<span class="text-rose-500 font-bold">✗</span>') : ''}
+                        <button onclick="removeFromAct10('${ph}', 'tu')" class="text-[10px] text-rose-500 hover:underline" ${exerciseState.act10Checked ? 'disabled' : ''}>Retirer</button>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- VOUS -->
+              <div class="p-4 bg-blue-50/40 rounded-xl border border-blue-100 min-h-[120px] space-y-1">
+                <span class="text-xs font-bold text-blue-700 block mb-2 uppercase tracking-wide">Colonne VOUS</span>
+                ${exerciseState.act10Vous.map(ph => {
+                  const isCorrect = ["Bonjour Madame.", "Vous habitez où ?", "Vous avez quel âge ?", "Vous vous appelez comment ?"].includes(ph);
+                  return `
+                    <div class="flex items-center justify-between p-1.5 bg-white border rounded text-xs">
+                      <span>${ph}</span>
+                      <div class="flex items-center gap-2">
+                        ${exerciseState.act10Checked ? (isCorrect ? '<span class="text-emerald-500 font-bold">✓</span>' : '<span class="text-rose-500 font-bold">✗</span>') : ''}
+                        <button onclick="removeFromAct10('${ph}', 'vous')" class="text-[10px] text-rose-500 hover:underline" ${exerciseState.act10Checked ? 'disabled' : ''}>Retirer</button>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct10()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              <button onclick="resetAct10()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.moveToAct10 = function(ph, target) {
+      if (target === 'tu') {
+        exerciseState.act10Tu.push(ph);
+      } else {
+        exerciseState.act10Vous.push(ph);
+      }
+      renderPage();
+    }
+    window.removeFromAct10 = function(ph, target) {
+      if (target === 'tu') {
+        exerciseState.act10Tu = exerciseState.act10Tu.filter(x => x !== ph);
+      } else {
+        exerciseState.act10Vous = exerciseState.act10Vous.filter(x => x !== ph);
+      }
+      renderPage();
+    }
+    window.checkAct10 = function() { exerciseState.act10Checked = true; renderPage(); }
+    window.resetAct10 = function() {
+      exerciseState.act10Tu = [];
+      exerciseState.act10Vous = [];
+      exerciseState.act10Checked = false;
+      renderPage();
+    }
+
+    // Page 8: Dialogue modèle
+    function renderPage8(container) {
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">📖 Dialogue 1 — À l’école</h3>
+            <p class="text-slate-600 text-sm">Entraînez-vous à écouter cette conversation formelle complète de début d'année.</p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl max-w-xl mx-auto space-y-4 shadow-xs">
+            ${[
+              { user: "A", text: "Bonjour." },
+              { user: "B", text: "Bonjour." },
+              { user: "A", text: "Vous vous appelez comment ?" },
+              { user: "B", text: "Je m’appelle Lina Haddad." },
+              { user: "A", text: "Vous avez quel âge ?" },
+              { user: "B", text: "J’ai 29 ans." },
+              { user: "A", text: "Vous venez d’où ?" },
+              { user: "B", text: "Je viens de Syrie." },
+              { user: "A", text: "Vous habitez où ?" },
+              { user: "B", text: "J’habite à Mouscron." }
+            ].map(row => `
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${row.user === 'A' ? 'bg-blue-100 text-blue-800' : 'bg-slate-200 text-slate-700'} shrink-0 mt-1">
+                  ${row.user}
+                </div>
+                <div class="flex-1">
+                  ${createPlayButton(row.text)}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Activité 11 -->
+          <div class="border-t border-slate-200 pt-8 space-y-4">
+            <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 11 — Je complète</div>
+            <p class="text-xs text-slate-500">Saisissez les mots manquants : <strong>Bonjour — m'appelle — ai — viens — habite</strong></p>
+
+            <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl max-w-lg space-y-3 text-sm">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-blue-700 w-8">A :</span>
+                <span>Bonjour.</span>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-slate-600 w-8">B :</span>
+                <input type="text" value="${exerciseState.act11.q1}" oninput="updateAct11('q1', this.value)" placeholder="Réponse B" class="border border-slate-300 p-1 rounded text-xs w-28 text-center" ${exerciseState.act11Checked ? 'disabled' : ''}>
+                <span>.</span>
+                ${exerciseState.act11Checked ? (exerciseState.act11.q1.toLowerCase().trim() === 'bonjour' ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-blue-700 w-8">A :</span>
+                <span>Vous vous appelez comment ?</span>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-slate-600 w-8">B :</span>
+                <span>Je</span>
+                <input type="text" value="${exerciseState.act11.q2}" oninput="updateAct11('q2', this.value)" placeholder="m'appelle" class="border border-slate-300 p-1 rounded text-xs w-24 text-center" ${exerciseState.act11Checked ? 'disabled' : ''}>
+                <span>Samir.</span>
+                ${exerciseState.act11Checked ? (["m'appelle", "mappelle"].includes(exerciseState.act11.q2.toLowerCase().trim()) ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-blue-700 w-8">A :</span>
+                <span>Vous avez quel âge ?</span>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-slate-600 w-8">B :</span>
+                <span>J'</span>
+                <input type="text" value="${exerciseState.act11.q3}" oninput="updateAct11('q3', this.value)" placeholder="ai" class="border border-slate-300 p-1 rounded text-xs w-16 text-center" ${exerciseState.act11Checked ? 'disabled' : ''}>
+                <span>34 ans.</span>
+                ${exerciseState.act11Checked ? (exerciseState.act11.q3.toLowerCase().trim() === 'ai' ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-blue-700 w-8">A :</span>
+                <span>Vous venez d’où ?</span>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-slate-600 w-8">B :</span>
+                <span>Je</span>
+                <input type="text" value="${exerciseState.act11.q4}" oninput="updateAct11('q4', this.value)" placeholder="viens" class="border border-slate-300 p-1 rounded text-xs w-20 text-center" ${exerciseState.act11Checked ? 'disabled' : ''}>
+                <span>d'Afghanistan.</span>
+                ${exerciseState.act11Checked ? (exerciseState.act11.q4.toLowerCase().trim() === 'viens' ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-blue-700 w-8">A :</span>
+                <span>Vous habitez où ?</span>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-slate-600 w-8">B :</span>
+                <span>J'</span>
+                <input type="text" value="${exerciseState.act11.q5}" oninput="updateAct11('q5', this.value)" placeholder="habite" class="border border-slate-300 p-1 rounded text-xs w-20 text-center" ${exerciseState.act11Checked ? 'disabled' : ''}>
+                <span>à Mouscron.</span>
+                ${exerciseState.act11Checked ? (exerciseState.act11.q5.toLowerCase().trim() === 'habite' ? '<span class="text-emerald-500">✓</span>' : '<span class="text-rose-500">✗</span>') : ''}
+              </div>
+            </div>
+
+            <div class="flex gap-4 pt-2">
+              <button onclick="checkAct11()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-sm">Valider</button>
+              ${exerciseState.act11Checked ? `<button onclick="resetAct11()" class="text-xs text-slate-500 hover:text-slate-850 underline">Recommencer</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateAct11 = function(id, val) { exerciseState.act11[id] = val; }
+    window.checkAct11 = function() { exerciseState.act11Checked = true; renderPage(); }
+    window.resetAct11 = function() { exerciseState.act11 = { q1: '', q2: '', q3: '', q4: '', q5: '' }; exerciseState.act11Checked = false; renderPage(); }
+
+    // Page 9: Je prépare ma présentation
+    function renderPage9(container) {
+      const p = exerciseState.presentation;
+      const displayPrenom = p.prenom || '_____';
+      const displayNom = p.nom || '_____';
+      const displayAge = p.age || '_____';
+      const displayPays = p.pays || '_____';
+      const displayVille = p.ville || '_____';
+      const displayNat = p.nationalite || '_____';
+
+      const speechTextStandard = `Bonjour. Je m'appelle ${p.prenom || 'Ali'} ${p.nom || 'Rahimi'}. J'ai ${p.age || '32'} ans. Je viens de ${p.pays || 'Syrie'}. J'habite à ${p.ville || 'Mouscron'}. Je suis ${p.nationalite || 'syrien'}.`;
+      const speechTextComplex = `Bonjour. Mon prénom est ${p.prenom || 'Ali'}. Mon nom est ${p.nom || 'Rahimi'}. J'ai ${p.age || '32'} ans. Je viens de ${p.pays || 'Syrie'}, mais maintenant j'habite à ${p.ville || 'Mouscron'}. Je suis ${p.nationalite || 'syrien'}.`;
+
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">✍️ Ma fiche d’identité</h3>
+            <p class="text-slate-600 text-sm">Complétez le formulaire. Vos paragraphes de présentation se génèrent automatiquement et peuvent être écoutés.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Formulaire -->
+            <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-4">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block border-b pb-2">Mes données</span>
+              
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-500 mb-1">Prénom</label>
+                  <input type="text" value="${p.prenom}" oninput="updatePres('prenom', this.value)" placeholder="Ali" class="w-full border border-slate-300 p-2 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-500 mb-1">Nom</label>
+                  <input type="text" value="${p.nom}" oninput="updatePres('nom', this.value)" placeholder="Rahimi" class="w-full border border-slate-300 p-2 rounded-lg text-xs bg-white">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-500 mb-1">Âge</label>
+                  <input type="number" value="${p.age}" oninput="updatePres('age', this.value)" placeholder="32" class="w-full border border-slate-300 p-2 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-500 mb-1">Genre</label>
+                  <select onchange="updatePres('genre', this.value)" class="w-full border border-slate-300 p-2 rounded-lg text-xs bg-white">
+                    <option value="M" ${p.genre === 'M' ? 'selected' : ''}>Masculin 👨</option>
+                    <option value="F" ${p.genre === 'F' ? 'selected' : ''}>Féminin 👩</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-500 mb-1">Pays d'origine</label>
+                  <input type="text" value="${p.pays}" oninput="updatePres('pays', this.value)" placeholder="Syrie" class="w-full border border-slate-300 p-2 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-500 mb-1">Ville actuelle</label>
+                  <input type="text" value="${p.ville}" oninput="updatePres('ville', this.value)" placeholder="Mouscron" class="w-full border border-slate-300 p-2 rounded-lg text-xs bg-white">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Nationalité</label>
+                <input type="text" value="${p.nationalite}" oninput="updatePres('nationalite', this.value)" placeholder="syrien / syrienne" class="w-full border border-slate-300 p-2 rounded-lg text-xs bg-white">
+              </div>
+            </div>
+
+            <!-- Résultat -->
+            <div class="space-y-4">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block">Ma présentation générée</span>
+              
+              <!-- Standard -->
+              <div class="bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl p-5 shadow-sm space-y-4 relative overflow-hidden">
+                <span class="text-[9px] font-bold tracking-widest uppercase text-blue-200 block">Version standard</span>
+                <p class="text-sm font-semibold leading-relaxed">
+                  " Bonjour. Je m'appelle ${displayPrenom} ${displayNom}. J'ai ${displayAge} ans. Je viens de ${displayPays}. J'habite à ${displayVille}. Je suis ${displayNat}. "
+                </p>
+                <button onclick="playAudio(\`${speechTextStandard}\`)" class="flex items-center gap-2 bg-white text-blue-700 hover:bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                  <span>🔊 Écouter</span>
+                </button>
+              </div>
+
+              <!-- Variante -->
+              <div class="bg-slate-900 text-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
+                <span class="text-[9px] font-bold tracking-widest uppercase text-slate-400 block">Variante (Plus complexe)</span>
+                <p class="text-xs leading-relaxed text-slate-300">
+                  " Bonjour. Mon prénom est ${displayPrenom}. Mon nom de famille est ${displayNom}. J'ai ${displayAge} ans. Je viens de ${displayPays}, mais maintenant j'habite à ${displayVille}. Je suis ${displayNat}. "
+                </p>
+                <button onclick="playAudio(\`${speechTextComplex}\`)" class="flex items-center gap-2 bg-slate-800 text-slate-200 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 transition">
+                  <span>🔊 Écouter la variante</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updatePres = function(field, val) {
+      exerciseState.presentation[field] = val;
+      renderPage9(document.getElementById('lessonContent'));
+    }
+
+    // Page 10: Activité finale : je rencontre quelqu’un
+    function renderPage10(container) {
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">👥 Activité finale : je rencontre quelqu'un</h3>
+            <p class="text-slate-600 text-sm"><strong>Mission :</strong> Interrogez trois camarades virtuels ou réels. Écrivez leurs informations puis écoutez le paragraphe généré.</p>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+            <div class="grid grid-cols-4 bg-slate-100 px-3 py-2 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider border-b">
+              <span>Prénom</span>
+              <span>Âge</span>
+              <span>Pays</span>
+              <span>Ville</span>
+            </div>
+            
+            <div class="divide-y divide-slate-200 p-2 space-y-3">
+              ${exerciseState.classmates.map((student, idx) => `
+                <div class="grid grid-cols-4 gap-2 items-center">
+                  <input type="text" value="${student.prenom}" oninput="updateClassmate(${idx}, 'prenom', this.value)" placeholder="Amir" class="border border-slate-300 p-1 rounded text-xs">
+                  <input type="number" value="${student.age}" oninput="updateClassmate(${idx}, 'age', this.value)" placeholder="27" class="border border-slate-300 p-1 rounded text-xs">
+                  <input type="text" value="${student.pays}" oninput="updateClassmate(${idx}, 'pays', this.value)" placeholder="Iran" class="border border-slate-300 p-1 rounded text-xs">
+                  <input type="text" value="${student.ville}" oninput="updateClassmate(${idx}, 'ville', this.value)" placeholder="Mouscron" class="border border-slate-300 p-1 rounded text-xs">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="text-base font-bold text-slate-900">Ensuite, je présente chaque personne (Il / Elle) :</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              ${exerciseState.classmates.map((student, idx) => {
+                const pronoun = student.genre === 'M' ? 'Il' : 'Elle';
+                const speech = `${pronoun} s'appelle ${student.prenom || 'Amir'}. ${pronoun} a ${student.age || '27'} ans. ${pronoun} vient d'${student.pays || 'Iran'}. ${pronoun} habite à ${student.ville || 'Mouscron'}.`;
+                return `
+                  <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 flex flex-col justify-between">
+                    <div>
+                      <div class="flex items-center justify-between border-b pb-1.5 mb-2">
+                        <span class="text-xs font-bold text-slate-400">Camarade #${idx+1}</span>
+                        <div class="flex gap-1">
+                          <button onclick="updateClassmateGenre(${idx}, 'M')" class="px-1.5 py-0.5 rounded text-[9px] font-bold ${student.genre === 'M' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'}">IL</button>
+                          <button onclick="updateClassmateGenre(${idx}, 'F')" class="px-1.5 py-0.5 rounded text-[9px] font-bold ${student.genre === 'F' ? 'bg-pink-600 text-white' : 'bg-slate-200 text-slate-500'}">ELLE</button>
+                        </div>
+                      </div>
+                      <p class="text-xs text-slate-700 italic">
+                        "${speech}"
+                      </p>
+                    </div>
+                    <button onclick="playAudio(\`${speech}\`)" class="w-full flex items-center justify-center gap-1.5 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 rounded-lg text-xs font-bold text-slate-700 transition">
+                      <span>🔊 Écouter</span>
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateClassmate = function(idx, field, val) {
+      exerciseState.classmates[idx][field] = val;
+      renderPage10(document.getElementById('lessonContent'));
+    }
+    window.updateClassmateGenre = function(idx, genre) {
+      exerciseState.classmates[idx].genre = genre;
+      renderPage10(document.getElementById('lessonContent'));
+    }
+
+    // Page 11: Petit bilan
+    function renderPage11(container) {
+      const items = [
+        { key: "saluer", label: "saluer quelqu’un" },
+        { key: "prenom", label: "dire mon prénom" },
+        { key: "age", label: "dire mon âge" },
+        { key: "pays", label: "dire mon pays" },
+        { key: "ville", label: "dire ma ville" },
+        { key: "question", label: "poser une question simple" },
+        { key: "tuvous", label: "utiliser tu ou vous" }
+      ];
+
+      const allYes = items.every(i => exerciseState.bilan[i.key] === true);
+
+      container.innerHTML = `
+        <div class="space-y-8 animate-fadeIn">
+          <div class="space-y-2">
+            <h3 class="text-xl md:text-2xl font-bold text-slate-900">🏆 Bilan de la Leçon 1</h3>
+            <p class="text-slate-600 text-sm">Cochez vos réussites pour valider officiellement votre première leçon !</p>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 md:p-6 space-y-3">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block">Je sais faire...</span>
+            <div class="divide-y divide-slate-200/50">
+              ${items.map(item => `
+                <div class="py-3 flex items-center justify-between gap-4">
+                  <span class="text-sm font-semibold text-slate-700">${item.label}</span>
+                  <div class="flex gap-2">
+                    <button onclick="updateBilan('${item.key}', true)" class="px-3 py-1 rounded-lg text-xs font-bold border transition ${exerciseState.bilan[item.key] === true ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-100'}">Oui 👍</button>
+                    <button onclick="updateBilan('${item.key}', false)" class="px-3 py-1 rounded-lg text-xs font-bold border transition ${exerciseState.bilan[item.key] === false ? 'bg-amber-600 text-white border-amber-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-100'}">Pas encore 🧐</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          ${allYes ? `
+            <div class="bg-gradient-to-r from-amber-500 to-yellow-500 text-white p-5 rounded-2xl shadow-md flex items-center gap-4 animate-fadeIn">
+              <span class="text-3xl">🎉</span>
+              <div>
+                <h4 class="font-extrabold text-sm sm:text-base">Félicitations ! Vous maîtrisez la leçon 1 !</h4>
+                <p class="text-[10px] sm:text-xs text-amber-50">Vous êtes prêt à passer à la leçon suivante avec brio.</p>
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Les phrases importantes -->
+          <div class="space-y-3">
+            <h4 class="text-base font-bold text-slate-900">Les phrases indispensables à connaître</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${[
+                "Je m'appelle...",
+                "J'ai ... ans.",
+                "Je viens de...",
+                "J'habite à...",
+                "Je suis...",
+                "Tu t'appelles comment ?",
+                "Vous vous appelez comment ?",
+                "Tu habites où ?",
+                "Vous habitez où ?"
+              ].map(ph => createPlayButton(ph)).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.updateBilan = function(key, val) {
+      exerciseState.bilan[key] = val;
+      renderPage11(document.getElementById('lessonContent'));
+    }
+
+    // --- NAVIGATION LOGIC ---
+
+    function buildSidebar() {
+      const desktopContainer = document.getElementById('desktopNav');
+      const mobileContainer = document.getElementById('mobileNav');
+      
+      const navHtml = pages.map(p => `
+        <button data-id="${p.id}" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+          <span class="truncate">${p.title}</span>
+          <svg class="w-4 h-4 shrink-0 ml-1 hidden active-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+      `).join('');
+
+      desktopContainer.innerHTML = '<h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Plan de la Leçon</h2>' + navHtml;
+      mobileContainer.innerHTML = '<h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-3">Plan de la Leçon</h2>' + navHtml;
+
+      // Event listeners for page change
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.addEventListener('click', () => {
+          currentPage = parseInt(el.getAttribute('data-id'));
+          renderPage();
+          document.getElementById('mobileMenuOverlay').classList.add('hidden');
+        });
+      });
+    }
+
+    // Prev/Next Click events
+    document.getElementById('btnPrev').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage();
+      }
+    });
+
+    document.getElementById('btnNext').addEventListener('click', () => {
+      if (currentPage < 11) {
+        currentPage++;
+        renderPage();
+      }
+    });
+
+    // Mobile Menu Toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('mobileMenuOverlay').classList.toggle('hidden');
+    });
+
+    document.getElementById('mobileMenuOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('mobileMenuOverlay')) {
+        document.getElementById('mobileMenuOverlay').classList.add('hidden');
+      }
+    });
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      buildSidebar();
+      renderPage();
+    };
+
+  </script>
+</body>
+</html>
