@@ -1,0 +1,2176 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Volume2, 
+  CheckCircle2, 
+  XCircle, 
+  ArrowRight, 
+  ArrowLeft, 
+  BookOpen, 
+  User, 
+  MapPin, 
+  Calendar, 
+  Flag, 
+  Smile, 
+  Check, 
+  RotateCcw, 
+  Play, 
+  Users, 
+  Award, 
+  GraduationCap, 
+  Info,
+  ChevronRight,
+  Menu,
+  X
+} from 'lucide-react';
+
+export default function App() {
+  // Page Navigation State (1 to 11)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Audio helper using Web Speech API
+  const playAudio = (text) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel(); // Stop current audio
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fr-FR';
+      utterance.rate = 0.85; // Slightly slower for A1 learners
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.warn("La synthèse vocale n'est pas supportée par ce navigateur.");
+    }
+  };
+
+  // --- INTERACTIVE EXERCISES STATES ---
+  
+  // Page 1 - Activité 1 Matching
+  const [act1Matches, setAct1Matches] = useState({
+    'un prénom': '',
+    'un âge': '',
+    'un pays': '',
+    'une ville': '',
+    'une nationalité': ''
+  });
+  const [act1Checked, setAct1Checked] = useState(false);
+  const [act1Score, setAct1Score] = useState(0);
+
+  // Page 2 - Activité 2 Fill in
+  const [act2Answers, setAct2Answers] = useState({ q1: '', q2: '', q3: '', q4: '' });
+  const [act2Checked, setAct2Checked] = useState(false);
+
+  // Page 3 - Activité 4 Complete
+  const [act4Answers, setAct4Answers] = useState({ q1: '', q2: '', q3: '', q4: '' });
+  const [act4Checked, setAct4Checked] = useState(false);
+
+  // Page 3 - Activité 5 Ask question
+  const [act5Answers, setAct5Answers] = useState({ q1: '', q2: '', q3: '' });
+  const [act5Checked, setAct5Checked] = useState(false);
+
+  // Page 4 - Activité 6 Respond age
+  const [act6Answers, setAct6Answers] = useState({ q1: '', q2: '', q3: '' });
+  const [act6Checked, setAct6Checked] = useState(false);
+
+  // Page 5 - Activité 7 Complete text
+  const [act7Answers, setAct7Answers] = useState({ q1: '', q2: '', q3: '', q4: '' });
+  const [act7Checked, setAct7Checked] = useState(false);
+
+  // Page 5 - Activité 8 Match lines
+  const [act8Answers, setAct8Answers] = useState({
+    "Tu viens d'où ?": '',
+    "Tu habites où ?": '',
+    "Tu as quel âge ?": '',
+    "Tu t'appelles comment ?": ''
+  });
+  const [act8Checked, setAct8Checked] = useState(false);
+
+  // Page 6 - Activité 9 Choose Gender
+  const [act9Answers, setAct9Answers] = useState({ q1: '', q2: '', q3: '', q4: '', q5: '' });
+  const [act9Checked, setAct9Checked] = useState(false);
+
+  // Page 7 - Activité 10 Sort Tu/Vous
+  const [act10Tu, setAct10Tu] = useState([]);
+  const [act10Vous, setAct10Vous] = useState([]);
+  const [act10Checked, setAct10Checked] = useState(false);
+  const [act10Feedback, setAct10Feedback] = useState({});
+
+  // Page 8 - Activité 11 Complete dialogue
+  const [act11Answers, setAct11Answers] = useState({ q1: '', q2: '', q3: '', q4: '', q5: '' });
+  const [act11Checked, setAct11Checked] = useState(false);
+
+  // Page 9 - Presentation Creator
+  const [presentationData, setPresentationData] = useState({
+    prenom: '',
+    nom: '',
+    age: '',
+    pays: '',
+    ville: '',
+    nationalite: '',
+    genre: 'M'
+  });
+
+  // Page 10 - Classmate Table
+  const [classmates, setClassmates] = useState([
+    { id: 1, prenom: '', age: '', pays: '', ville: '', genre: 'M' },
+    { id: 2, prenom: '', age: '', pays: '', ville: '', genre: 'F' },
+    { id: 3, prenom: '', age: '', pays: '', ville: '', genre: 'M' }
+  ]);
+
+  // Page 11 - Check-list (Bilan)
+  const [bilanChecks, setBilanChecks] = useState({
+    saluer: false,
+    prenom: false,
+    age: false,
+    pays: false,
+    ville: false,
+    question: false,
+    tuvous: false
+  });
+
+  // Page Titles list
+  const pages = [
+    { id: 1, title: "1. Entrée & Vocabulaire" },
+    { id: 2, title: "2. Saluer en français" },
+    { id: 3, title: "3. Prénom et Nom" },
+    { id: 4, title: "4. Dire son âge" },
+    { id: 5, title: "5. Pays et Ville" },
+    { id: 6, title: "6. Nationalité (M/F)" },
+    { id: 7, title: "7. Tu ou Vous ?" },
+    { id: 8, title: "8. Dialogue modèle" },
+    { id: 9, title: "9. Ma présentation" },
+    { id: 10, title: "10. Activité : Rencontres" },
+    { id: 11, title: "11. Petit Bilan" }
+  ];
+
+  // Helper component for clickable text with speech bubble
+  const ClickablePhrase = ({ text, translation, className = "" }) => {
+    return (
+      <button 
+        onClick={() => playAudio(text)}
+        className={`group text-left inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-slate-800 dark:hover:bg-slate-700 transition duration-200 border border-blue-100/50 dark:border-slate-700/50 ${className}`}
+        title="Cliquez pour écouter la prononciation"
+      >
+        <Volume2 className="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition duration-200 shrink-0" />
+        <div>
+          <span className="font-semibold text-slate-800 dark:text-slate-100">{text}</span>
+          {translation && (
+            <span className="block text-xs text-slate-500 dark:text-slate-400 font-normal mt-0.5 italic">{translation}</span>
+          )}
+        </div>
+      </button>
+    );
+  };
+
+  // Check Act 1 answers
+  const checkAct1 = () => {
+    const correctAnswers = {
+      'un prénom': 'carte d’identité',
+      'un âge': 'gâteau d’anniversaire',
+      'un pays': 'drapeau / carte du monde',
+      'une ville': 'maisons / ville',
+      'une nationalité': 'groupe de personnes avec drapeaux'
+    };
+    let score = 0;
+    Object.keys(correctAnswers).forEach(key => {
+      if (act1Matches[key] === correctAnswers[key]) score++;
+    });
+    setAct1Score(score);
+    setAct1Checked(true);
+  };
+
+  // Reset Act 1
+  const resetAct1 = () => {
+    setAct1Matches({ 'un prénom': '', 'un âge': '', 'un pays': '', 'une ville': '', 'une nationalité': '' });
+    setAct1Checked(false);
+    setAct1Score(0);
+  };
+
+  // Act 1 Options
+  const act1Options = [
+    'carte d’identité',
+    'gâteau d’anniversaire',
+    'drapeau / carte du monde',
+    'maisons / ville',
+    'groupe de personnes avec drapeaux'
+  ];
+
+  // Act 1 Icons
+  const getAct1Icon = (word) => {
+    switch (word) {
+      case 'un prénom': return '🪪';
+      case 'un âge': return '🎂';
+      case 'un pays': return '🗺️';
+      case 'une ville': return '🏙️';
+      case 'une nationalité': return '🌍';
+      default: return '❓';
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans flex flex-col transition-colors duration-200">
+      
+      {/* Header */}
+      <header className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 px-4 py-3 md:px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 text-white p-2 rounded-xl shadow-md shadow-blue-500/10">
+              <GraduationCap className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Niveau A1.1 — Cours de Débutant</span>
+              <h1 className="text-lg md:text-xl font-extrabold text-slate-900 dark:text-white leading-tight">LEÇON 1 : Bonjour, je me présente</h1>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {/* Audio Tip banner */}
+            <div className="hidden lg:flex items-center gap-2 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-3 py-1.5 rounded-lg border border-amber-100 dark:border-amber-900 text-xs">
+              <Volume2 className="w-4 h-4 animate-pulse shrink-0" />
+              <span>Cliquez sur les phrases bleues pour écouter la prononciation !</span>
+            </div>
+            
+            {/* Mobile menu button */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Container */}
+      <div className="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto relative">
+        
+        {/* Sidebar Navigation - Desktop */}
+        <aside className="hidden md:block w-72 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 p-4 sticky top-[69px] h-[calc(100vh-69px)] overflow-y-auto">
+          <div className="space-y-1">
+            <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-3 mb-3">Plan de la Leçon</h2>
+            {pages.map((p) => {
+              const isActive = currentPage === p.id;
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => setCurrentPage(p.id)}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-sm font-medium transition duration-150 ${
+                    isActive 
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/15' 
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <span className="truncate">{p.title}</span>
+                  {isActive && <ChevronRight className="w-4 h-4 shrink-0 ml-1" />}
+                </button>
+              );
+            })}
+          </div>
+          
+          {/* Progress Indicator */}
+          <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-900">
+            <div className="flex justify-between text-xs font-semibold text-slate-500 mb-2">
+              <span>Progression globale</span>
+              <span>{Math.round((currentPage / 11) * 100)}%</span>
+            </div>
+            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+              <div 
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                style={{ width: `${(currentPage / 11) * 100}%` }}
+              />
+            </div>
+          </div>
+        </aside>
+
+        {/* Sidebar Navigation - Mobile */}
+        {mobileMenuOpen && (
+          <div className="md:hidden fixed inset-0 top-[69px] z-40 bg-slate-900/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)}>
+            <div 
+              className="w-4/5 max-w-xs bg-white dark:bg-slate-950 h-full p-4 overflow-y-auto shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="space-y-1">
+                <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-3 mb-3">Plan de la Leçon</h2>
+                {pages.map((p) => {
+                  const isActive = currentPage === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        setCurrentPage(p.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left text-sm font-medium transition ${
+                        isActive 
+                          ? 'bg-blue-600 text-white' 
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span className="truncate">{p.title}</span>
+                      {isActive && <ChevronRight className="w-4 h-4 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Content Area */}
+        <main className="flex-1 p-4 md:p-8 max-w-4xl mx-auto w-full pb-24">
+          
+          {/* Warning Banner Mobile */}
+          <div className="lg:hidden mb-6 flex items-center gap-2 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 p-3 rounded-xl border border-amber-100 dark:border-amber-900 text-xs">
+            <Volume2 className="w-4 h-4 animate-pulse shrink-0" />
+            <span>Tapez sur les phrases bleues pour entendre la voix !</span>
+          </div>
+
+          <div className="bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
+            
+            {/* Header of Content card */}
+            <div className="bg-slate-50 dark:bg-slate-900/50 px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Page {currentPage} sur 11</span>
+              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{pages[currentPage - 1].title}</span>
+            </div>
+
+            {/* Dynamic Content Switching */}
+            <div className="p-6 md:p-8 flex-1">
+              
+              {/* PAGE 1 */}
+              {currentPage === 1 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-4">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
+                      <Smile className="w-6 h-6 text-blue-600" />
+                      Aujourd'hui, j'apprends à me présenter
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed">
+                      Bienvenue dans votre premier cours de français ! À la fin de cette leçon, vous serez capable de donner des informations simples sur votre identité.
+                    </p>
+                  </div>
+
+                  {/* Objective Table */}
+                  <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-inner">
+                    <div className="px-4 py-3 bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-500 uppercase tracking-wider grid grid-cols-2">
+                      <span>Je peux dire...</span>
+                      <span>Exemple (Cliquez pour écouter)</span>
+                    </div>
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800 text-sm">
+                      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Mon prénom</span>
+                        <ClickablePhrase text="Je m'appelle Ali." translation="My name is Ali." />
+                      </div>
+                      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Mon âge</span>
+                        <ClickablePhrase text="J'ai 32 ans." translation="I am 32 years old." />
+                      </div>
+                      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Mon pays</span>
+                        <ClickablePhrase text="Je viens de Syrie." translation="I come from Syria." />
+                      </div>
+                      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Ma ville</span>
+                        <ClickablePhrase text="J'habite à Mouscron." translation="I live in Mouscron." />
+                      </div>
+                      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-2 items-center">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300">Ma nationalité</span>
+                        <div className="flex flex-col gap-2">
+                          <ClickablePhrase text="Je suis syrien." translation="I am Syrian (Masculin)" />
+                          <ClickablePhrase text="Je suis syrienne." translation="I am Syrian (Féminin)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Vocabulary section */}
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Les mots importants</h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {[
+                        { text: "un prénom", icon: <User className="w-4 h-4 text-emerald-600" /> },
+                        { text: "un nom", icon: <User className="w-4 h-4 text-emerald-600" /> },
+                        { text: "un âge", icon: <Calendar className="w-4 h-4 text-amber-600" /> },
+                        { text: "un pays", icon: <Flag className="w-4 h-4 text-blue-600" /> },
+                        { text: "une ville", icon: <MapPin className="w-4 h-4 text-red-600" /> },
+                        { text: "une nationalité", icon: <Flag className="w-4 h-4 text-purple-600" /> }
+                      ].map((word) => (
+                        <button
+                          key={word.text}
+                          onClick={() => playAudio(word.text)}
+                          className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 bg-white dark:bg-slate-900 shadow-sm text-left transition hover:shadow-md"
+                        >
+                          <span className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">{word.icon}</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{word.text}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Identity card visualizer */}
+                  <div className="bg-gradient-to-r from-blue-50 to-slate-50 dark:from-slate-950 dark:to-slate-900 border border-blue-100 dark:border-slate-800 rounded-xl p-6 relative overflow-hidden">
+                    <div className="absolute right-4 top-4 text-6xl opacity-10">🪪</div>
+                    <h4 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <span>🪪</span> Mon Identité
+                    </h4>
+                    <ul className="space-y-2.5 text-sm font-medium">
+                      <li><span className="text-slate-500 dark:text-slate-400">Je m'appelle...</span> (prénom + nom)</li>
+                      <li><span className="text-slate-500 dark:text-slate-400">J'ai ... ans.</span> (âge)</li>
+                      <li><span className="text-slate-500 dark:text-slate-400">Je viens de...</span> (pays de naissance)</li>
+                      <li><span className="text-slate-500 dark:text-slate-400">J'habite à...</span> (ville actuelle)</li>
+                    </ul>
+                  </div>
+
+                  {/* Activité 1 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 1 — Interactif</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Je regarde, je comprends</h4>
+                    <p className="text-xs text-slate-500">Associez chaque mot important à son illustration ou sa description.</p>
+                    
+                    <div className="space-y-3">
+                      {Object.keys(act1Matches).map((word) => (
+                        <div key={word} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                          <span className="font-bold flex items-center gap-2 text-sm">
+                            <span className="text-lg">{getAct1Icon(word)}</span>
+                            {word}
+                          </span>
+                          <div className="flex items-center gap-3">
+                            <select
+                              value={act1Matches[word]}
+                              onChange={(e) => {
+                                setAct1Matches({ ...act1Matches, [word]: e.target.value });
+                                setAct1Checked(false);
+                              }}
+                              className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 max-w-xs"
+                              disabled={act1Checked}
+                            >
+                              <option value="">-- Choisir une réponse --</option>
+                              {act1Options.map(opt => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))}
+                            </select>
+                            {act1Checked && (
+                              act1Matches[word] === {
+                                'un prénom': 'carte d’identité',
+                                'un âge': 'gâteau d’anniversaire',
+                                'un pays': 'drapeau / carte du monde',
+                                'une ville': 'maisons / ville',
+                                'une nationalité': 'groupe de personnes avec drapeaux'
+                              }[word] ? (
+                                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                              ) : (
+                                <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
+                              )
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2">
+                      <button
+                        onClick={checkAct1}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow-md shadow-blue-500/10"
+                      >
+                        Vérifier mes réponses
+                      </button>
+                      {act1Checked && (
+                        <div className="flex items-center gap-4">
+                          <span className="font-bold text-sm">Score : {act1Score}/5</span>
+                          <button onClick={resetAct1} className="p-2 text-slate-500 hover:text-slate-800"><RotateCcw className="w-4 h-4" /></button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 2 */}
+              {currentPage === 2 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      👋 Bonjour !
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      En France, saluer est très important. Choisissez les mots selon le moment de la journée ou la personne.
+                    </p>
+                  </div>
+
+                  {/* Greeting Grid cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {[
+                      { sit: "Le matin (Morning)", word: "Bonjour", desc: "Formel & poli", color: "from-sky-100 to-sky-50 dark:from-sky-950/20" },
+                      { sit: "L'après-midi (Afternoon)", word: "Bonjour", desc: "Formel & poli", color: "from-orange-100 to-orange-50 dark:from-orange-950/20" },
+                      { sit: "Le soir (Evening)", word: "Bonsoir", desc: "Formel, à partir de 18h", color: "from-indigo-100 to-indigo-50 dark:from-indigo-950/20" },
+                      { sit: "Entre amis (With friends)", word: "Salut", desc: "Informel & amical", color: "from-emerald-100 to-emerald-50 dark:from-emerald-950/20" },
+                      { sit: "Pour partir (Leaving)", word: "Au revoir", desc: "À tout le monde", color: "from-rose-100 to-rose-50 dark:from-rose-950/20" }
+                    ].map((g, idx) => (
+                      <div key={idx} className={`p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-gradient-to-b ${g.color} flex flex-col justify-between shadow-sm`}>
+                        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">{g.sit}</span>
+                        <div className="my-4">
+                          <ClickablePhrase text={g.word} className="w-full text-center" />
+                        </div>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 italic text-center">{g.desc}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Activité 2 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 2 — Complétez</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Je choisis le bon salut</h4>
+                    
+                    <div className="space-y-4 max-w-xl">
+                      {[
+                        { num: 1, label: "Le matin, je dis :", key: "q1", correct: "Bonjour", choices: ["Bonjour", "Bonsoir", "Au revoir"] },
+                        { num: 2, label: "À un ami, je dis :", key: "q2", correct: "Salut", choices: ["Bonjour", "Salut", "Bonsoir"] },
+                        { num: 3, label: "Le soir, je dis :", key: "q3", correct: "Bonsoir", choices: ["Bonjour", "Salut", "Bonsoir"] },
+                        { num: 4, label: "Je pars (je m'en vais), je dis :", key: "q4", correct: "Au revoir", choices: ["Salut", "Au revoir", "Bonjour"] }
+                      ].map((item) => (
+                        <div key={item.key} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                          <span className="text-sm font-semibold">{item.num}. {item.label}</span>
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={act2Answers[item.key]}
+                              onChange={(e) => {
+                                setAct2Answers({ ...act2Answers, [item.key]: e.target.value });
+                                setAct2Checked(false);
+                              }}
+                              className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm rounded-lg p-1.5 focus:ring-blue-500 focus:border-blue-500"
+                              disabled={act2Checked}
+                            >
+                              <option value="">Choisir...</option>
+                              {item.choices.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                            {act2Checked && (
+                              act2Answers[item.key] === item.correct ? (
+                                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                              ) : (
+                                <XCircle className="w-5 h-5 text-rose-500" />
+                              )
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => setAct2Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider
+                      </button>
+                      {act2Checked && (
+                        <button 
+                          onClick={() => { setAct2Answers({ q1: '', q2: '', q3: '', q4: '' }); setAct2Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Activité 3 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 3 — Dialogue oral</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Je parle avec mon voisin</h4>
+                    <p className="text-sm text-slate-500">Cliquez sur chaque ligne pour vous entraîner à haute voix.</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Dialogue Standard / Vous */}
+                      <div className="bg-slate-50 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+                        <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Formule polie / Vous</span>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-blue-600 mt-1">A:</span>
+                            <ClickablePhrase text="Bonjour." />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-emerald-600 mt-1">B:</span>
+                            <ClickablePhrase text="Bonjour." />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-blue-600 mt-1">A:</span>
+                            <ClickablePhrase text="Comment ça va ?" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-emerald-600 mt-1">B:</span>
+                            <ClickablePhrase text="Ça va bien, merci. Et vous ?" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-blue-600 mt-1">A:</span>
+                            <ClickablePhrase text="Ça va." />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Dialogue Amis / Tu */}
+                      <div className="bg-slate-50 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+                        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">Formule amicale / Tu</span>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-blue-600 mt-1">A:</span>
+                            <ClickablePhrase text="Salut !" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-emerald-600 mt-1">B:</span>
+                            <ClickablePhrase text="Salut !" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-blue-600 mt-1">A:</span>
+                            <ClickablePhrase text="Ça va ?" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-bold text-emerald-600 mt-1">B:</span>
+                            <ClickablePhrase text="Oui, ça va." />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 3 */}
+              {currentPage === 3 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <User className="w-6 h-6 text-blue-600" />
+                      Dire son prénom et son nom
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      Comment poser la question et comment y répondre ? Voici les formules à écouter.
+                    </p>
+                  </div>
+
+                  {/* Q&A List */}
+                  <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Questions & Réponses courantes</h4>
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2.5 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800 transition">
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Question (Tu)</span>
+                          <ClickablePhrase text="Comment tu t'appelles ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Réponse</span>
+                          <ClickablePhrase text="Je m'appelle Nadia." />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2.5 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800 transition">
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Question (Vous)</span>
+                          <ClickablePhrase text="Vous vous appelez comment ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Réponse</span>
+                          <ClickablePhrase text="Je m'appelle Mohamed." />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2.5 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800 transition">
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Question Formelle (Nom)</span>
+                          <ClickablePhrase text="Quel est votre nom ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Réponse</span>
+                          <ClickablePhrase text="Mon nom est Rahimi." />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center p-2.5 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-800 transition">
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Question Formelle (Prénom)</span>
+                          <ClickablePhrase text="Quel est votre prénom ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase block">Réponse</span>
+                          <ClickablePhrase text="Mon prénom est Sara." />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Warning: Prénom vs Nom */}
+                  <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900 rounded-xl p-5 flex items-start gap-4">
+                    <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-amber-900 dark:text-amber-400 text-sm">Attention ! Ne confondez pas :</h4>
+                      <p className="text-xs text-amber-800 dark:text-amber-300">
+                        <strong>Prénom</strong> (First name) = Sara, Ali, Mohamed, Fatima <br />
+                        <strong>Nom de famille</strong> (Last name / Family name) = Rahimi, Dupont, Benali, Diallo
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Activité 4 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 4 — Écrivez</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Je complète les phrases</h4>
+                    <p className="text-xs text-slate-500">Saisissez les lettres manquantes pour reconstituer les phrases.</p>
+                    
+                    <div className="space-y-3 text-sm">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <span className="w-48 font-medium">1. Je m'__________ Ali.</span>
+                        <div className="flex items-center gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="ex: appelle" 
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1.5 rounded-lg text-xs"
+                            value={act4Answers.q1}
+                            onChange={(e) => { setAct4Answers({ ...act4Answers, q1: e.target.value }); setAct4Checked(false); }}
+                            disabled={act4Checked}
+                          />
+                          {act4Checked && (act4Answers.q1.toLowerCase().trim() === 'appelle' ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <span className="w-48 font-medium">2. Mon pr__________ est Sara.</span>
+                        <div className="flex items-center gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="ex: prénom"
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1.5 rounded-lg text-xs"
+                            value={act4Answers.q2}
+                            onChange={(e) => { setAct4Answers({ ...act4Answers, q2: e.target.value }); setAct4Checked(false); }}
+                            disabled={act4Checked}
+                          />
+                          {act4Checked && (["prénom", "prenom"].includes(act4Answers.q2.toLowerCase().trim()) ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <span className="w-48 font-medium">3. Mon n__________ est Diallo.</span>
+                        <div className="flex items-center gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="ex: nom"
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1.5 rounded-lg text-xs"
+                            value={act4Answers.q3}
+                            onChange={(e) => { setAct4Answers({ ...act4Answers, q3: e.target.value }); setAct4Checked(false); }}
+                            disabled={act4Checked}
+                          />
+                          {act4Checked && (act4Answers.q3.toLowerCase().trim() === 'nom' ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <span className="w-48 font-medium">4. Vous vous appelez c__________ ?</span>
+                        <div className="flex items-center gap-2">
+                          <input 
+                            type="text" 
+                            placeholder="ex: comment"
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1.5 rounded-lg text-xs"
+                            value={act4Answers.q4}
+                            onChange={(e) => { setAct4Answers({ ...act4Answers, q4: e.target.value }); setAct4Checked(false); }}
+                            disabled={act4Checked}
+                          />
+                          {act4Checked && (act4Answers.q4.toLowerCase().trim() === 'comment' ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct4Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider
+                      </button>
+                      {act4Checked && (
+                        <button 
+                          onClick={() => { setAct4Answers({ q1: '', q2: '', q3: '', q4: '' }); setAct4Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Activité 5 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 5 — Questionner</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Je pose la bonne question</h4>
+                    <p className="text-xs text-slate-500">Écrivez la question qui correspond à la réponse donnée.</p>
+                    
+                    <div className="space-y-4 text-sm">
+                      <div className="space-y-1">
+                        <label className="font-semibold block text-xs text-slate-500">1. Réponse : "Je m'appelle Omar."</label>
+                        <div className="flex items-center gap-3">
+                          <input 
+                            type="text" 
+                            className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-2 rounded-xl text-sm"
+                            placeholder="Écrire la question (ex: Comment tu t'appelles ?)"
+                            value={act5Answers.q1}
+                            onChange={(e) => { setAct5Answers({ ...act5Answers, q1: e.target.value }); setAct5Checked(false); }}
+                            disabled={act5Checked}
+                          />
+                          {act5Checked && (
+                            ["comment tu t'appelles ?", "comment tu t'appelles", "comment vous vous appelez ?", "vous vous appelez comment ?"].includes(act5Answers.q1.toLowerCase().trim()) ? (
+                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                            ) : (
+                              <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
+                            )
+                          )}
+                        </div>
+                        <span className="text-[10px] text-slate-400">Accepté : "Comment tu t'appelles ?" ou "Vous vous appelez comment ?"</span>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-semibold block text-xs text-slate-500">2. Réponse : "Mon prénom est Lina."</label>
+                        <div className="flex items-center gap-3">
+                          <input 
+                            type="text" 
+                            className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-2 rounded-xl text-sm"
+                            placeholder="Écrire la question (ex: Quel est votre prénom ?)"
+                            value={act5Answers.q2}
+                            onChange={(e) => { setAct5Answers({ ...act5Answers, q2: e.target.value }); setAct5Checked(false); }}
+                            disabled={act5Checked}
+                          />
+                          {act5Checked && (
+                            ["quel est votre prénom ?", "quel est ton prénom ?", "quel est votre prenom ?", "quel est ton prenom ?"].includes(act5Answers.q2.toLowerCase().trim()) ? (
+                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                            ) : (
+                              <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
+                            )
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-semibold block text-xs text-slate-500">3. Réponse : "Mon nom est Hassan."</label>
+                        <div className="flex items-center gap-3">
+                          <input 
+                            type="text" 
+                            className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-2 rounded-xl text-sm"
+                            placeholder="Écrire la question (ex: Quel est votre nom ?)"
+                            value={act5Answers.q3}
+                            onChange={(e) => { setAct5Answers({ ...act5Answers, q3: e.target.value }); setAct5Checked(false); }}
+                            disabled={act5Checked}
+                          />
+                          {act5Checked && (
+                            ["quel est votre nom ?", "quel est ton nom ?"].includes(act5Answers.q3.toLowerCase().trim()) ? (
+                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                            ) : (
+                              <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
+                            )
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct5Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider les questions
+                      </button>
+                      {act5Checked && (
+                        <button 
+                          onClick={() => { setAct5Answers({ q1: '', q2: '', q3: '' }); setAct5Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 4 */}
+              {currentPage === 4 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Calendar className="w-6 h-6 text-blue-600" />
+                      Dire son âge
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      Comment poser la question de l'âge et dire les nombres en français de 0 à 20.
+                    </p>
+                  </div>
+
+                  {/* Questions block */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Avec un ami (Tu)</span>
+                      <div className="space-y-2">
+                        <ClickablePhrase text="Tu as quel âge ?" className="w-full" />
+                        <ClickablePhrase text="Quel âge as-tu ?" className="w-full" />
+                        <span className="block text-xs text-slate-500 dark:text-slate-400 mt-2">Réponse :</span>
+                        <ClickablePhrase text="J'ai 25 ans." className="w-full" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Poli ou administration (Vous)</span>
+                      <div className="space-y-2">
+                        <ClickablePhrase text="Vous avez quel âge ?" className="w-full" />
+                        <span className="block text-xs text-slate-500 dark:text-slate-400 mt-6">Réponse :</span>
+                        <ClickablePhrase text="J'ai 40 ans." className="w-full" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Numbers Audio Pad */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-slate-900 dark:text-white">Les nombres utiles (0 - 20)</h4>
+                    <p className="text-xs text-slate-500">Cliquez sur un bouton pour entendre la prononciation du chiffre.</p>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                      {[
+                        { n: 0, w: "zéro" }, { n: 1, w: "un" }, { n: 2, w: "deux" }, { n: 3, w: "trois" }, { n: 4, w: "quatre" },
+                        { n: 5, w: "cinq" }, { n: 6, w: "six" }, { n: 7, w: "sept" }, { n: 8, w: "huit" }, { n: 9, w: "neuf" },
+                        { n: 10, w: "dix" }
+                      ].map((item) => (
+                        <button
+                          key={item.n}
+                          onClick={() => playAudio(item.w)}
+                          className="flex items-center justify-between p-2.5 bg-white dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg text-left shadow-sm group transition"
+                        >
+                          <span className="font-bold text-blue-600 dark:text-blue-400 text-sm">{item.n}</span>
+                          <span className="text-slate-800 dark:text-slate-200 text-xs font-semibold">{item.w}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="p-4 bg-blue-50/50 dark:bg-slate-900/30 border border-blue-100/50 dark:border-slate-800 rounded-xl">
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                        {[
+                          { n: 11, w: "onze" }, { n: 12, w: "douze" }, { n: 13, w: "treize" }, { n: 14, w: "quatorze" }, { n: 15, w: "quinze" },
+                          { n: 16, w: "seize" }, { n: 17, w: "dix-sept" }, { n: 18, w: "dix-huit" }, { n: 19, w: "dix-neuf" }, { n: 20, w: "vingt" }
+                        ].map((item) => (
+                          <button
+                            key={item.n}
+                            onClick={() => playAudio(item.w)}
+                            className="flex items-center justify-between p-2.5 bg-white dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg text-left shadow-sm group transition"
+                          >
+                            <span className="font-bold text-blue-600 dark:text-blue-400 text-sm">{item.n}</span>
+                            <span className="text-slate-800 dark:text-slate-200 text-xs font-semibold">{item.w}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Activité 6 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 6 — Répondez</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Complétez avec votre réponse</h4>
+                    <p className="text-xs text-slate-500">Mettez un nombre en lettres ou en chiffres (ex: 30, trente).</p>
+
+                    <div className="space-y-4 text-sm max-w-lg">
+                      <div className="space-y-1">
+                        <label className="font-semibold block">1. Tu as quel âge ?</label>
+                        <div className="flex items-center gap-2">
+                          <span>→ J'ai</span>
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1.5 rounded-lg w-24 text-center text-sm"
+                            placeholder="ex: 25"
+                            value={act6Answers.q1}
+                            onChange={(e) => { setAct6Answers({ ...act6Answers, q1: e.target.value }); setAct6Checked(false); }}
+                            disabled={act6Checked}
+                          />
+                          <span>ans.</span>
+                          {act6Checked && (act6Answers.q1.trim() ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <XCircle className="w-5 h-5 text-rose-500" />)}
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-semibold block">2. Vous avez quel âge ?</label>
+                        <div className="flex items-center gap-2">
+                          <span>→ J'ai</span>
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1.5 rounded-lg w-24 text-center text-sm"
+                            placeholder="ex: 40"
+                            value={act6Answers.q2}
+                            onChange={(e) => { setAct6Answers({ ...act6Answers, q2: e.target.value }); setAct6Checked(false); }}
+                            disabled={act6Checked}
+                          />
+                          <span>ans.</span>
+                          {act6Checked && (act6Answers.q2.trim() ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <XCircle className="w-5 h-5 text-rose-500" />)}
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="font-semibold block">3. Quel âge a Nadia ? (Dans la leçon, elle a 29 ans, ou d'autres exemples)</label>
+                        <div className="flex items-center gap-2">
+                          <span>→ Elle a</span>
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-1.5 rounded-lg w-24 text-center text-sm"
+                            placeholder="ex: 29"
+                            value={act6Answers.q3}
+                            onChange={(e) => { setAct6Answers({ ...act6Answers, q3: e.target.value }); setAct6Checked(false); }}
+                            disabled={act6Checked}
+                          />
+                          <span>ans.</span>
+                          {act6Checked && (["29", "vingt-neuf", "vingt neuf"].includes(act6Answers.q3.toLowerCase().trim()) ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <XCircle className="w-5 h-5 text-rose-500" />)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct6Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider
+                      </button>
+                      {act6Checked && (
+                        <button 
+                          onClick={() => { setAct6Answers({ q1: '', q2: '', q3: '' }); setAct6Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Oral Activity Box */}
+                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-slate-950 dark:to-slate-900 border border-emerald-100 dark:border-emerald-950 rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                      <Users className="w-5 h-5" />
+                      <h4 className="font-bold text-sm uppercase tracking-wider">Activité orale rapide</h4>
+                    </div>
+                    <p className="text-sm">Demandez à une personne à côté de vous :</p>
+                    <div className="space-y-2">
+                      <ClickablePhrase text="Bonjour, tu t'appelles comment ?" className="bg-white dark:bg-slate-800" />
+                      <ClickablePhrase text="Tu as quel âge ?" className="bg-white dark:bg-slate-800" />
+                    </div>
+                    <p className="text-sm pt-2">Puis présentez-la en disant :</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <span className="text-xs text-slate-400 font-bold block mb-1">Pour un garçon (M)</span>
+                        <ClickablePhrase text="Il s'appelle Ali. Il a 32 ans." className="bg-transparent border-0 p-0" />
+                      </div>
+                      <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <span className="text-xs text-slate-400 font-bold block mb-1">Pour une fille (F)</span>
+                        <ClickablePhrase text="Elle s'appelle Sara. Elle a 31 ans." className="bg-transparent border-0 p-0" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 5 */}
+              {currentPage === 5 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <MapPin className="w-6 h-6 text-blue-600" />
+                      Dire son pays et sa ville
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      Distinguez la structure pour le pays (Je viens de...) et la ville (J'habite à...).
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Le Pays */}
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4">
+                      <h4 className="font-bold text-blue-600 text-sm flex items-center gap-2">
+                        <Flag className="w-4 h-4" /> Le Pays (Country)
+                      </h4>
+                      <div className="space-y-3">
+                        <div>
+                          <span className="text-xs text-slate-400 font-semibold block">Tu :</span>
+                          <ClickablePhrase text="Tu viens d'où ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-semibold block">Vous :</span>
+                          <ClickablePhrase text="Vous venez d'où ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-semibold block">Autre question :</span>
+                          <ClickablePhrase text="Tu es de quel pays ?" />
+                        </div>
+                        <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                          <span className="text-xs text-slate-500 block font-bold">Réponses :</span>
+                          <div className="flex flex-col gap-2 mt-1">
+                            <ClickablePhrase text="Je viens de Syrie." />
+                            <ClickablePhrase text="Je viens d'Ukraine." />
+                            <ClickablePhrase text="Je suis du Maroc." />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* La Ville */}
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4">
+                      <h4 className="font-bold text-emerald-600 text-sm flex items-center gap-2">
+                        <MapPin className="w-4 h-4" /> La Ville (City)
+                      </h4>
+                      <div className="space-y-3">
+                        <div>
+                          <span className="text-xs text-slate-400 font-semibold block">Tu :</span>
+                          <ClickablePhrase text="Tu habites où ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-semibold block">Vous :</span>
+                          <ClickablePhrase text="Vous habitez où ?" />
+                        </div>
+                        <div>
+                          <span className="text-xs text-slate-400 font-semibold block">Formel :</span>
+                          <ClickablePhrase text="Dans quelle ville habitez-vous ?" />
+                        </div>
+                        <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                          <span className="text-xs text-slate-500 block font-bold">Réponses :</span>
+                          <div className="flex flex-col gap-2 mt-1">
+                            <ClickablePhrase text="J'habite à Mouscron." />
+                            <ClickablePhrase text="J'habite à Tournai." />
+                            <ClickablePhrase text="J'habite à Bruxelles." />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Activité 7 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 7 — Complétez</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Je complète le texte</h4>
+                    <p className="text-xs text-slate-500">Sélectionnez le bon mot : <strong>viens / habite / pays / ville</strong></p>
+
+                    <div className="space-y-3 max-w-lg text-sm">
+                      <div className="flex items-center gap-3 justify-between p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                        <span>1. Je ____________ de Guinée.</span>
+                        <div className="flex items-center gap-2">
+                          <select 
+                            value={act7Answers.q1} 
+                            onChange={(e) => { setAct7Answers({ ...act7Answers, q1: e.target.value }); setAct7Checked(false); }}
+                            className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1 text-xs"
+                            disabled={act7Checked}
+                          >
+                            <option value="">Choisir...</option>
+                            <option value="viens">viens</option>
+                            <option value="habite">habite</option>
+                          </select>
+                          {act7Checked && (act7Answers.q1 === 'viens' ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 justify-between p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                        <span>2. J'____________ à Mouscron.</span>
+                        <div className="flex items-center gap-2">
+                          <select 
+                            value={act7Answers.q2} 
+                            onChange={(e) => { setAct7Answers({ ...act7Answers, q2: e.target.value }); setAct7Checked(false); }}
+                            className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1 text-xs"
+                            disabled={act7Checked}
+                          >
+                            <option value="">Choisir...</option>
+                            <option value="viens">viens</option>
+                            <option value="habite">habite</option>
+                          </select>
+                          {act7Checked && (act7Answers.q2 === 'habite' ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 justify-between p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                        <span>3. Mon ____________ est l'Afghanistan.</span>
+                        <div className="flex items-center gap-2">
+                          <select 
+                            value={act7Answers.q3} 
+                            onChange={(e) => { setAct7Answers({ ...act7Answers, q3: e.target.value }); setAct7Checked(false); }}
+                            className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1 text-xs"
+                            disabled={act7Checked}
+                          >
+                            <option value="">Choisir...</option>
+                            <option value="pays">pays</option>
+                            <option value="ville">ville</option>
+                          </select>
+                          {act7Checked && (act7Answers.q3 === 'pays' ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 justify-between p-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                        <span>4. Ma ____________ est Bruxelles.</span>
+                        <div className="flex items-center gap-2">
+                          <select 
+                            value={act7Answers.q4} 
+                            onChange={(e) => { setAct7Answers({ ...act7Answers, q4: e.target.value }); setAct7Checked(false); }}
+                            className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1 text-xs"
+                            disabled={act7Checked}
+                          >
+                            <option value="">Choisir...</option>
+                            <option value="pays">pays</option>
+                            <option value="ville">ville</option>
+                          </select>
+                          {act7Checked && (act7Answers.q4 === 'ville' ? <Check className="text-emerald-500 w-4 h-4" /> : <XCircle className="text-rose-500 w-4 h-4" />)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct7Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider
+                      </button>
+                      {act7Checked && (
+                        <button 
+                          onClick={() => { setAct7Answers({ q1: '', q2: '', q3: '', q4: '' }); setAct7Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Activité 8 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 8 — Reliez</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Associez chaque question à sa réponse</h4>
+                    
+                    <div className="space-y-3 text-sm">
+                      {[
+                        { q: "Tu viens d'où ?", choices: ["J'ai 30 ans.", "Je viens d'Irak.", "J'habite à Mouscron.", "Je m'appelle Ahmed."], correct: "Je viens d'Irak." },
+                        { q: "Tu habites où ?", choices: ["J'ai 30 ans.", "Je viens d'Irak.", "J'habite à Mouscron.", "Je m'appelle Ahmed."], correct: "J'habite à Mouscron." },
+                        { q: "Tu as quel âge ?", choices: ["J'ai 30 ans.", "Je viens d'Irak.", "J'habite à Mouscron.", "Je m'appelle Ahmed."], correct: "J'ai 30 ans." },
+                        { q: "Tu t'appelles comment ?", choices: ["J'ai 30 ans.", "Je viens d'Irak.", "J'habite à Mouscron.", "Je m'appelle Ahmed."], correct: "Je m'appelle Ahmed." }
+                      ].map((item) => (
+                        <div key={item.q} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                          <span className="font-semibold text-blue-600">{item.q}</span>
+                          <div className="flex items-center gap-3">
+                            <select
+                              value={act8Answers[item.q]}
+                              onChange={(e) => {
+                                setAct8Answers({ ...act8Answers, [item.q]: e.target.value });
+                                setAct8Checked(false);
+                              }}
+                              className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1.5 text-xs focus:ring-blue-500 focus:border-blue-500"
+                              disabled={act8Checked}
+                            >
+                              <option value="">Choisir la réponse...</option>
+                              {item.choices.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                            {act8Checked && (
+                              act8Answers[item.q] === item.correct ? (
+                                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                              ) : (
+                                <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
+                              )
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct8Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider
+                      </button>
+                      {act8Checked && (
+                        <button 
+                          onClick={() => { setAct8Answers({ "Tu viens d'où ?": '', "Tu habites où ?": '', "Tu as quel âge ?": '', "Tu t'appelles comment ?": '' }); setAct8Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 6 */}
+              {currentPage === 6 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Flag className="w-6 h-6 text-blue-600" />
+                      La Nationalité : Masculin ou Féminin
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      En français, l'adjectif s'accorde. Les hommes parlent au masculin, les femmes au féminin.
+                    </p>
+                  </div>
+
+                  {/* Table with pronunciations */}
+                  <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div className="grid grid-cols-2 bg-slate-100 dark:bg-slate-800 px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest border-b border-slate-200 dark:border-slate-800">
+                      <span>Homme 👨 (Masculin)</span>
+                      <span>Femme 👩 (Féminin)</span>
+                    </div>
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                      {[
+                        { m: "Je suis syrien.", f: "Je suis syrienne." },
+                        { m: "Je suis ukrainien.", f: "Je suis ukrainienne." },
+                        { m: "Je suis marocain.", f: "Je suis marocaine." },
+                        { m: "Je suis turc.", f: "Je suis turque." },
+                        { m: "Je suis belge.", f: "Je suis belge." },
+                        { m: "Je suis français.", f: "Je suis française." }
+                      ].map((item, idx) => (
+                        <div key={idx} className="grid grid-cols-2 p-3 gap-3 items-center hover:bg-slate-100/30 dark:hover:bg-slate-800/30 transition">
+                          <ClickablePhrase text={item.m} />
+                          <ClickablePhrase text={item.f} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Grammar Box */}
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-950 dark:to-slate-900 border border-blue-100 dark:border-slate-850 rounded-2xl p-6 space-y-3">
+                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                      <BookOpen className="w-5 h-5 animate-pulse" />
+                      <h4 className="font-bold text-sm uppercase tracking-wide">Petit point de langue</h4>
+                    </div>
+                    <p className="text-sm leading-relaxed">
+                      Souvent, au féminin, on ajoute un <strong>-e</strong> : <br />
+                      <span className="inline-block mt-2 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-700 text-xs">marocain ➔ marocain<strong>e</strong></span> <br />
+                      <span className="inline-block mt-1 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-700 text-xs">turc ➔ turqu<strong>e</strong></span> <br />
+                      <span className="inline-block mt-1 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-700 text-xs">syrien ➔ syrienn<strong>e</strong></span>
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Si l'adjectif se termine déjà par un <strong>-e</strong>, il ne change pas : <br />
+                      <span className="inline-block mt-1 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-700 text-xs">belg<strong>e</strong> ➔ belg<strong>e</strong></span>
+                    </p>
+                  </div>
+
+                  {/* Activité 9 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 9 — Je choisis</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Sélectionnez le bon mot</h4>
+                    <p className="text-xs text-slate-500">Choisissez la forme correcte en accord avec le prénom.</p>
+
+                    <div className="space-y-4 max-w-lg text-sm">
+                      {[
+                        { num: 1, text: "Fatima est", correct: "marocaine", options: ["marocaine", "marocain"] },
+                        { num: 2, text: "Ali est", correct: "syrien", options: ["syrienne", "syrien"] },
+                        { num: 3, text: "Olga est", correct: "ukrainienne", options: ["ukrainien", "ukrainienne"] },
+                        { num: 4, text: "Mehmet est", correct: "turc", options: ["turque", "turc"] },
+                        { num: 5, text: "Anna est", correct: "belge", options: ["belge", "belges"] }
+                      ].map((item) => {
+                        const stateKey = `q${item.num}`;
+                        return (
+                          <div key={item.num} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                            <span className="font-semibold">{item.num}. {item.text} _______.</span>
+                            <div className="flex items-center gap-2">
+                              {item.options.map(opt => (
+                                <button
+                                  key={opt}
+                                  onClick={() => {
+                                    setAct9Answers({ ...act9Answers, [stateKey]: opt });
+                                    setAct9Checked(false);
+                                  }}
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                                    act9Answers[stateKey] === opt
+                                      ? 'bg-blue-600 text-white border-blue-600'
+                                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50'
+                                  }`}
+                                  disabled={act9Checked}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                              {act9Checked && (
+                                act9Answers[stateKey] === item.correct ? (
+                                  <Check className="text-emerald-500 w-5 h-5 shrink-0 ml-1" />
+                                ) : (
+                                  <XCircle className="text-rose-500 w-5 h-5 shrink-0 ml-1" />
+                                )
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct9Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider mes choix
+                      </button>
+                      {act9Checked && (
+                        <button 
+                          onClick={() => { setAct9Answers({ q1: '', q2: '', q3: '', q4: '', q5: '' }); setAct9Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 7 */}
+              {currentPage === 7 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      🗣️ Tu ou Vous ?
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      En français, nous distinguons le "Tu" (proche, amical) et le "Vous" (politesse, inconnu, administration).
+                    </p>
+                  </div>
+
+                  {/* Tu/Vous Comparison box */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-5 border-l-4 border-emerald-500 space-y-4 shadow-sm">
+                      <span className="font-bold text-emerald-600 text-sm block">Utilisez TU pour :</span>
+                      <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+                        <li>un ami (a friend)</li>
+                        <li>une personne jeune que je connais</li>
+                        <li>la famille (family)</li>
+                        <li>un collègue proche (close colleague)</li>
+                      </ul>
+                      <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                        <span className="text-xs text-slate-400 font-bold block mb-1">Exemple :</span>
+                        <ClickablePhrase text="Salut, tu t'appelles comment ?" className="bg-white" />
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-5 border-l-4 border-blue-500 space-y-4 shadow-sm">
+                      <span className="font-bold text-blue-600 text-sm block">Utilisez VOUS pour :</span>
+                      <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+                        <li>un professeur (teacher)</li>
+                        <li>une personne que je ne connais pas (stranger)</li>
+                        <li>à l'administration (officials)</li>
+                        <li>au médecin (doctor)</li>
+                      </ul>
+                      <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                        <span className="text-xs text-slate-400 font-bold block mb-1">Exemple :</span>
+                        <ClickablePhrase text="Bonjour, vous vous appelez comment ?" className="bg-white" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Activité 10 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 10 — Tri interactif</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Classez les expressions</h4>
+                    <p className="text-xs text-slate-500">Cliquez sur une phrase pour la placer dans la bonne catégorie (TU ou VOUS).</p>
+
+                    <div className="space-y-6">
+                      {/* Source phrases */}
+                      <div className="flex flex-wrap gap-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                        {[
+                          "Salut !",
+                          "Bonjour Madame.",
+                          "Tu habites où ?",
+                          "Vous habitez où ?",
+                          "Tu as quel âge ?",
+                          "Vous avez quel âge ?",
+                          "Comment tu t'appelles ?",
+                          "Vous vous appelez comment ?"
+                        ].map((ph) => {
+                          const isInTu = act10Tu.includes(ph);
+                          const isInVous = act10Vous.includes(ph);
+                          if (isInTu || isInVous) return null;
+                          return (
+                            <button
+                              key={ph}
+                              onClick={() => {
+                                // Default assign helper or toggle menu
+                                // For simplicity, let's open prompt or quick click action
+                                const choice = window.confirm(`Placer "${ph}" dans la catégorie 'TU' ?\n(Cliquez sur 'Annuler' pour la placer dans 'VOUS')`);
+                                if (choice) {
+                                  setAct10Tu([...act10Tu, ph]);
+                                } else {
+                                  setAct10Vous([...act10Vous, ph]);
+                                }
+                                setAct10Checked(false);
+                              }}
+                              className="px-3 py-1.5 bg-white dark:bg-slate-850 hover:bg-blue-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-250 dark:border-slate-700 rounded-lg text-xs font-semibold shadow-sm transition"
+                            >
+                              {ph}
+                            </button>
+                          );
+                        })}
+                        {act10Tu.length + act10Vous.length === 8 && (
+                          <span className="text-xs text-slate-500 italic">Toutes les phrases sont classées !</span>
+                        )}
+                      </div>
+
+                      {/* Columns */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* TU Column */}
+                        <div className="p-4 bg-emerald-50/50 dark:bg-slate-900/30 rounded-xl border border-emerald-100 dark:border-emerald-950/50 min-h-[150px] space-y-2">
+                          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest block mb-2">Colonne TU</span>
+                          {act10Tu.map(ph => (
+                            <div key={ph} className="flex items-center justify-between p-2 bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-900/40 rounded-lg text-xs font-medium">
+                              <span>{ph}</span>
+                              <div className="flex items-center gap-2">
+                                {act10Checked && (
+                                  ["Salut !", "Tu habites où ?", "Tu as quel âge ?", "Comment tu t'appelles ?"].includes(ph) ? (
+                                    <Check className="text-emerald-500 w-4 h-4" />
+                                  ) : (
+                                    <XCircle className="text-rose-500 w-4 h-4" />
+                                  )
+                                )}
+                                <button 
+                                  onClick={() => { setAct10Tu(act10Tu.filter(x => x !== ph)); setAct10Checked(false); }}
+                                  className="text-[10px] text-rose-500 font-semibold"
+                                >
+                                  Retirer
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* VOUS Column */}
+                        <div className="p-4 bg-blue-50/50 dark:bg-slate-900/30 rounded-xl border border-blue-100 dark:border-blue-950/50 min-h-[150px] space-y-2">
+                          <span className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-widest block mb-2">Colonne VOUS</span>
+                          {act10Vous.map(ph => (
+                            <div key={ph} className="flex items-center justify-between p-2 bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900/40 rounded-lg text-xs font-medium">
+                              <span>{ph}</span>
+                              <div className="flex items-center gap-2">
+                                {act10Checked && (
+                                  ["Bonjour Madame.", "Vous habitez où ?", "Vous avez quel âge ?", "Vous vous appelez comment ?"].includes(ph) ? (
+                                    <Check className="text-emerald-500 w-4 h-4" />
+                                  ) : (
+                                    <XCircle className="text-rose-500 w-4 h-4" />
+                                  )
+                                )}
+                                <button 
+                                  onClick={() => { setAct10Vous(act10Vous.filter(x => x !== ph)); setAct10Checked(false); }}
+                                  className="text-[10px] text-rose-500 font-semibold"
+                                >
+                                  Retirer
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct10Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider le tri
+                      </button>
+                      <button 
+                        onClick={() => { setAct10Tu([]); setAct10Vous([]); setAct10Checked(false); }} 
+                        className="p-2 text-slate-500 hover:text-slate-800"
+                        title="Réinitialiser"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 8 */}
+              {currentPage === 8 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      📖 Dialogue modèle : À l'école
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      Lisez ce dialogue formel de début d'année. Utilisez le bouton "Play" pour écouter chaque ligne.
+                    </p>
+                  </div>
+
+                  {/* Fully Animated Conversational bubble style */}
+                  <div className="bg-slate-50 dark:bg-slate-900/60 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 max-w-2xl mx-auto">
+                    {[
+                      { s: "A", t: "Bonjour.", color: "bg-blue-600 text-white ml-0 mr-auto" },
+                      { s: "B", t: "Bonjour.", color: "bg-emerald-600 text-white ml-auto mr-0" },
+                      { s: "A", t: "Vous vous appelez comment ?", color: "bg-blue-600 text-white ml-0 mr-auto" },
+                      { s: "B", t: "Je m'appelle Lina Haddad.", color: "bg-emerald-600 text-white ml-auto mr-0" },
+                      { s: "A", t: "Vous avez quel âge ?", color: "bg-blue-600 text-white ml-0 mr-auto" },
+                      { s: "B", t: "J'ai 29 ans.", color: "bg-emerald-600 text-white ml-auto mr-0" },
+                      { s: "A", t: "Vous venez d'où ?", color: "bg-blue-600 text-white ml-0 mr-auto" },
+                      { s: "B", t: "Je viens de Syrie.", color: "bg-emerald-600 text-white ml-auto mr-0" },
+                      { s: "A", t: "Vous habitez où ?", color: "bg-blue-600 text-white ml-0 mr-auto" },
+                      { s: "B", t: "J'habite à Mouscron.", color: "bg-emerald-600 text-white ml-auto mr-0" }
+                    ].map((row, idx) => (
+                      <div key={idx} className={`flex items-start gap-2.5 ${row.color.includes('ml-auto') ? 'flex-row-reverse' : ''}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-between font-bold text-xs ${row.s === 'A' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                          <span className="mx-auto">{row.s}</span>
+                        </div>
+                        <button
+                          onClick={() => playAudio(row.t)}
+                          className={`p-3 rounded-2xl text-sm font-semibold shadow-sm text-left flex items-center gap-2 max-w-xs transition duration-150 ${
+                            row.s === 'A' 
+                              ? 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-150' 
+                              : 'bg-blue-600 hover:bg-blue-700 text-white'
+                          }`}
+                        >
+                          <Volume2 className={`w-4 h-4 shrink-0 ${row.s === 'A' ? 'text-blue-600 dark:text-blue-400' : 'text-blue-200'}`} />
+                          <span>{row.t}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Activité 11 */}
+                  <div className="border-t border-slate-200 dark:border-slate-800 pt-8 space-y-4">
+                    <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider w-fit">Activité 11 — À votre tour</div>
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Complétez le dialogue de Samir</h4>
+                    <p className="text-xs text-slate-500">Saisissez les mots manquants : <strong>Bonjour, m'appelle, ai, viens, habite</strong></p>
+
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl max-w-lg space-y-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-blue-600 w-16">A:</span>
+                        <span>Bonjour.</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-emerald-600 w-16">B:</span>
+                        <div className="flex items-center gap-2">
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-800 border border-slate-350 dark:border-slate-700 px-1.5 py-1 rounded w-28 text-center text-xs"
+                            placeholder="ex: Bonjour"
+                            value={act11Answers.q1}
+                            onChange={(e) => { setAct11Answers({ ...act11Answers, q1: e.target.value }); setAct11Checked(false); }}
+                            disabled={act11Checked}
+                          />
+                          {act11Checked && (act11Answers.q1.toLowerCase().trim() === 'bonjour' ? <Check className="text-emerald-500" /> : <XCircle className="text-rose-500" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-blue-600 w-16">A:</span>
+                        <span>Vous vous appelez comment ?</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-emerald-600 w-16">B:</span>
+                        <div className="flex items-center gap-2">
+                          <span>Je</span>
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-800 border border-slate-350 dark:border-slate-700 px-1.5 py-1 rounded w-28 text-center text-xs"
+                            placeholder="ex: m'appelle"
+                            value={act11Answers.q2}
+                            onChange={(e) => { setAct11Answers({ ...act11Answers, q2: e.target.value }); setAct11Checked(false); }}
+                            disabled={act11Checked}
+                          />
+                          <span>Samir.</span>
+                          {act11Checked && (["m'appelle", "mappelle"].includes(act11Answers.q2.toLowerCase().trim()) ? <Check className="text-emerald-500" /> : <XCircle className="text-rose-500" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-blue-600 w-16">A:</span>
+                        <span>Vous avez quel âge ?</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-emerald-600 w-16">B:</span>
+                        <div className="flex items-center gap-2">
+                          <span>J'</span>
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-800 border border-slate-350 dark:border-slate-700 px-1.5 py-1 rounded w-20 text-center text-xs"
+                            placeholder="ex: ai"
+                            value={act11Answers.q3}
+                            onChange={(e) => { setAct11Answers({ ...act11Answers, q3: e.target.value }); setAct11Checked(false); }}
+                            disabled={act11Checked}
+                          />
+                          <span>34 ans.</span>
+                          {act11Checked && (act11Answers.q3.toLowerCase().trim() === 'ai' ? <Check className="text-emerald-500" /> : <XCircle className="text-rose-500" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-blue-600 w-16">A:</span>
+                        <span>Vous venez d'où ?</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-emerald-600 w-16">B:</span>
+                        <div className="flex items-center gap-2">
+                          <span>Je</span>
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-800 border border-slate-350 dark:border-slate-700 px-1.5 py-1 rounded w-24 text-center text-xs"
+                            placeholder="ex: viens"
+                            value={act11Answers.q4}
+                            onChange={(e) => { setAct11Answers({ ...act11Answers, q4: e.target.value }); setAct11Checked(false); }}
+                            disabled={act11Checked}
+                          />
+                          <span>d'Afghanistan.</span>
+                          {act11Checked && (act11Answers.q4.toLowerCase().trim() === 'viens' ? <Check className="text-emerald-500" /> : <XCircle className="text-rose-500" />)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-blue-600 w-16">A:</span>
+                        <span>Vous habitez où ?</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-emerald-600 w-16">B:</span>
+                        <div className="flex items-center gap-2">
+                          <span>J'</span>
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-800 border border-slate-350 dark:border-slate-700 px-1.5 py-1 rounded w-24 text-center text-xs"
+                            placeholder="ex: habite"
+                            value={act11Answers.q5}
+                            onChange={(e) => { setAct11Answers({ ...act11Answers, q5: e.target.value }); setAct11Checked(false); }}
+                            disabled={act11Checked}
+                          />
+                          <span>à Mouscron.</span>
+                          {act11Checked && (act11Answers.q5.toLowerCase().trim() === 'habite' ? <Check className="text-emerald-500" /> : <XCircle className="text-rose-500" />)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 pt-2">
+                      <button
+                        onClick={() => setAct11Checked(true)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition"
+                      >
+                        Valider mon dialogue
+                      </button>
+                      {act11Checked && (
+                        <button 
+                          onClick={() => { setAct11Answers({ q1: '', q2: '', q3: '', q4: '', q5: '' }); setAct11Checked(false); }} 
+                          className="p-2 text-slate-500 hover:text-slate-800"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 9 */}
+              {currentPage === 9 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      ✍️ Je prépare ma présentation
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      Remplissez la fiche d'identité ci-dessous. Le site va générer automatiquement votre texte de présentation en français !
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* User inputs form */}
+                    <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl space-y-4">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Ma Fiche d'Identité</span>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">Prénom</label>
+                          <input 
+                            type="text" 
+                            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 rounded-lg text-sm"
+                            placeholder="ex: Ali"
+                            value={presentationData.prenom}
+                            onChange={(e) => setPresentationData({ ...presentationData, prenom: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">Nom</label>
+                          <input 
+                            type="text" 
+                            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 rounded-lg text-sm"
+                            placeholder="ex: Rahimi"
+                            value={presentationData.nom}
+                            onChange={(e) => setPresentationData({ ...presentationData, nom: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">Âge</label>
+                          <input 
+                            type="number" 
+                            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 rounded-lg text-sm"
+                            placeholder="ex: 32"
+                            value={presentationData.age}
+                            onChange={(e) => setPresentationData({ ...presentationData, age: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">Genre</label>
+                          <select 
+                            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 rounded-lg text-sm"
+                            value={presentationData.genre}
+                            onChange={(e) => setPresentationData({ ...presentationData, genre: e.target.value })}
+                          >
+                            <option value="M">Homme 👨</option>
+                            <option value="F">Femme 👩</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">Pays d'origine</label>
+                          <input 
+                            type="text" 
+                            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 rounded-lg text-sm"
+                            placeholder="ex: Syrie"
+                            value={presentationData.pays}
+                            onChange={(e) => setPresentationData({ ...presentationData, pays: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-1">Ville actuelle</label>
+                          <input 
+                            type="text" 
+                            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 rounded-lg text-sm"
+                            placeholder="ex: Mouscron"
+                            value={presentationData.ville}
+                            onChange={(e) => setPresentationData({ ...presentationData, ville: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">Ma Nationalité (adjectif)</label>
+                        <input 
+                          type="text" 
+                          className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 p-2 rounded-lg text-sm"
+                          placeholder="ex: syrien / syrienne"
+                          value={presentationData.nationalite}
+                          onChange={(e) => setPresentationData({ ...presentationData, nationalite: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Result Card Generation */}
+                    <div className="space-y-4">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Mon Paragraphe de Présentation</span>
+                      
+                      {/* Standard Version Card */}
+                      <div className="bg-gradient-to-br from-blue-550 to-indigo-650 bg-blue-600 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                        <div className="absolute right-4 bottom-4 text-8xl text-white/5 font-extrabold select-none">Bonjour</div>
+                        <h4 className="text-xs font-bold tracking-widest uppercase text-blue-200 mb-3">Niveau Standard</h4>
+                        
+                        <p className="text-base font-semibold leading-relaxed mb-6">
+                          " Bonjour. Je m'appelle {presentationData.prenom || '_____'} {presentationData.nom || '_____'}. 
+                          J'ai {presentationData.age || '_____'} ans. Je viens de {presentationData.pays || '_____'}. 
+                          J'habite à {presentationData.ville || '_____'}. Je suis {presentationData.nationalite || '_____'}. "
+                        </p>
+
+                        <button
+                          onClick={() => {
+                            const textToSpeak = `Bonjour. Je m'appelle ${presentationData.prenom || 'Ali'} ${presentationData.nom || 'Rahimi'}. J'ai ${presentationData.age || '32'} ans. Je viens de ${presentationData.pays || 'Syrie'}. J'habite à ${presentationData.ville || 'Mouscron'}. Je suis ${presentationData.nationalite || 'syrien'}.`;
+                            playAudio(textToSpeak);
+                          }}
+                          className="flex items-center gap-2 bg-white text-blue-800 hover:bg-blue-50 px-4 py-2 rounded-xl text-xs font-bold transition shadow-md"
+                        >
+                          <Play className="w-4 h-4 fill-current" />
+                          <span>Écouter ma présentation</span>
+                        </button>
+                      </div>
+
+                      {/* Harder/Advanced Version Card */}
+                      <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-xl border border-slate-800">
+                        <h4 className="text-xs font-bold tracking-widest uppercase text-emerald-400 mb-3">Pour aller plus vite (Variante)</h4>
+                        
+                        <p className="text-sm font-semibold leading-relaxed text-slate-300 mb-6">
+                          " Bonjour. Mon prénom est {presentationData.prenom || '_____'}. Mon nom de famille est {presentationData.nom || '_____'}. 
+                          J'ai {presentationData.age || '_____'}_ ans. Je viens de {presentationData.pays || '_____'}_, mais maintenant j'habite à {presentationData.ville || '_____'}. 
+                          Je suis {presentationData.nationalite || '_____'}. "
+                        </p>
+
+                        <button
+                          onClick={() => {
+                            const textToSpeak = `Bonjour. Mon prénom est ${presentationData.prenom || 'Ali'}. Mon nom de famille est ${presentationData.nom || 'Rahimi'}. J'ai ${presentationData.age || '32'} ans. Je viens de ${presentationData.pays || 'Syrie'}, mais maintenant j'habite à ${presentationData.ville || 'Mouscron'}. Je suis ${presentationData.nationalite || 'syrien'}.`;
+                            playAudio(textToSpeak);
+                          }}
+                          className="flex items-center gap-2 bg-slate-800 text-slate-200 hover:bg-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition border border-slate-700"
+                        >
+                          <Play className="w-4 h-4 text-emerald-400 fill-current" />
+                          <span>Écouter la variante complexe</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 10 */}
+              {currentPage === 10 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Users className="w-6 h-6 text-blue-600" />
+                      Activité finale : je rencontre quelqu'un
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      <strong>Mission :</strong> Imaginez ou interrogez trois personnes de la classe. Saisissez leurs informations pour vous entraîner à la troisième personne ("Il/Elle").
+                    </p>
+                  </div>
+
+                  {/* Interactive Table for classmates */}
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div className="grid grid-cols-4 bg-slate-100 dark:bg-slate-800 px-4 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest border-b border-slate-200 dark:border-slate-800">
+                      <span>Prénom</span>
+                      <span>Âge</span>
+                      <span>Pays d'origine</span>
+                      <span>Ville actuelle</span>
+                    </div>
+                    
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800 p-2 space-y-3">
+                      {classmates.map((student, idx) => (
+                        <div key={student.id} className="grid grid-cols-4 gap-2 items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-950/40">
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-850 border border-slate-300 dark:border-slate-750 p-1.5 rounded text-xs"
+                            placeholder="ex: Amir / Sara"
+                            value={student.prenom}
+                            onChange={(e) => {
+                              const list = [...classmates];
+                              list[idx].prenom = e.target.value;
+                              setClassmates(list);
+                            }}
+                          />
+                          <input 
+                            type="number" 
+                            className="bg-white dark:bg-slate-850 border border-slate-300 dark:border-slate-750 p-1.5 rounded text-xs"
+                            placeholder="ex: 27"
+                            value={student.age}
+                            onChange={(e) => {
+                              const list = [...classmates];
+                              list[idx].age = e.target.value;
+                              setClassmates(list);
+                            }}
+                          />
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-850 border border-slate-300 dark:border-slate-750 p-1.5 rounded text-xs"
+                            placeholder="ex: Iran"
+                            value={student.pays}
+                            onChange={(e) => {
+                              const list = [...classmates];
+                              list[idx].pays = e.target.value;
+                              setClassmates(list);
+                            }}
+                          />
+                          <input 
+                            type="text" 
+                            className="bg-white dark:bg-slate-850 border border-slate-300 dark:border-slate-750 p-1.5 rounded text-xs"
+                            placeholder="ex: Mouscron"
+                            value={student.ville}
+                            onChange={(e) => {
+                              const list = [...classmates];
+                              list[idx].ville = e.target.value;
+                              setClassmates(list);
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Classmate sentences generator */}
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-slate-900 dark:text-white">Présentation générée à la troisième personne (Il / Elle)</h4>
+                    <p className="text-xs text-slate-500">Sélectionnez le genre (M pour garçon, F pour fille) de chaque camarade, puis cliquez pour écouter sa présentation.</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {classmates.map((student, idx) => {
+                        const pronoun = student.genre === 'M' ? 'Il' : 'Elle';
+                        const generatedText = `${pronoun} s'appelle ${student.prenom || 'Amir'}. ${pronoun} a ${student.age || '27'} ans. ${pronoun} vient d'${student.pays || 'Iran'}. ${pronoun} habite à ${student.ville || 'Mouscron'}.`;
+                        
+                        return (
+                          <div key={student.id} className="p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl flex flex-col justify-between shadow-sm space-y-4">
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-bold text-slate-400">Camarade #{idx + 1}</span>
+                                <div className="flex gap-1">
+                                  <button 
+                                    onClick={() => {
+                                      const list = [...classmates];
+                                      list[idx].genre = 'M';
+                                      setClassmates(list);
+                                    }}
+                                    className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${student.genre === 'M' ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'}`}
+                                  >
+                                    M (Il)
+                                  </button>
+                                  <button 
+                                    onClick={() => {
+                                      const list = [...classmates];
+                                      list[idx].genre = 'F';
+                                      setClassmates(list);
+                                    }}
+                                    className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${student.genre === 'F' ? 'bg-pink-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'}`}
+                                  >
+                                    F (Elle)
+                                  </button>
+                                </div>
+                              </div>
+                              <p className="text-xs font-medium text-slate-700 dark:text-slate-300 italic">
+                                "{generatedText}"
+                              </p>
+                            </div>
+
+                            <button
+                              onClick={() => playAudio(generatedText)}
+                              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-white dark:bg-slate-900 border border-slate-255 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 rounded-xl text-xs font-semibold transition"
+                            >
+                              <Volume2 className="w-3.5 h-3.5 text-blue-500" />
+                              <span>Écouter</span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAGE 11 */}
+              {currentPage === 11 && (
+                <div className="space-y-8 animate-fadeIn">
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Award className="w-6 h-6 text-yellow-550 text-yellow-500" />
+                      Félicitations ! Petit Bilan
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      Faites le point sur vos connaissances de cette Leçon 1. Cochez ce que vous savez faire.
+                    </p>
+                  </div>
+
+                  {/* Interactive Checkbox List */}
+                  <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400">Mon auto-évaluation</h4>
+                    
+                    <div className="divide-y divide-slate-200/65 dark:divide-slate-800">
+                      {[
+                        { key: "saluer", label: "Je peux saluer quelqu'un (Bonjour, bonsoir, salut...)" },
+                        { key: "prenom", label: "Je peux dire mon prénom et mon nom (Je m'appelle...)" },
+                        { key: "age", label: "Je peux dire mon âge (J'ai ... ans)" },
+                        { key: "pays", label: "Je peux dire mon pays de provenance (Je viens de...)" },
+                        { key: "ville", label: "Je peux dire ma ville actuelle (J'habite à...)" },
+                        { key: "question", label: "Je peux poser une question simple (Comment tu t'appelles ?)" },
+                        { key: "tuvous", label: "Je sais utiliser 'tu' ou 'vous' selon la situation" }
+                      ].map((item) => (
+                        <div key={item.key} className="py-3.5 flex items-center justify-between gap-4">
+                          <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{item.label}</span>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setBilanChecks({ ...bilanChecks, [item.key]: true })}
+                              className={`px-3 py-1 rounded-lg text-xs font-bold transition border ${
+                                bilanChecks[item.key] === true 
+                                  ? 'bg-emerald-600 text-white border-emerald-600' 
+                                  : 'bg-white dark:bg-slate-850 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100'
+                              }`}
+                            >
+                              Oui 👍
+                            </button>
+                            <button
+                              onClick={() => setBilanChecks({ ...bilanChecks, [item.key]: false })}
+                              className={`px-3 py-1 rounded-lg text-xs font-bold transition border ${
+                                bilanChecks[item.key] === false 
+                                  ? 'bg-rose-600 text-white border-rose-600' 
+                                  : 'bg-white dark:bg-slate-850 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100'
+                              }`}
+                            >
+                              Pas encore 🧐
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Congratulatory message or action based on checkboxes */}
+                  {Object.values(bilanChecks).every(val => val === true) && (
+                    <div className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white p-6 rounded-2xl shadow-xl flex items-center gap-5 animate-bounce">
+                      <div className="text-4xl">🏆</div>
+                      <div>
+                        <h4 className="font-extrabold text-lg">Bravo ! Vous avez maîtrisé la Leçon 1 !</h4>
+                        <p className="text-xs text-amber-100">Vous êtes prêt(e) pour la leçon suivante. Continuez comme ça !</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Recap important sentences */}
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Les phrases à retenir</h4>
+                    <p className="text-xs text-slate-500">Sélectionnez et écoutez les phrases clés à connaître par cœur.</p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        "Je m'appelle...",
+                        "J'ai ... ans.",
+                        "Je viens de...",
+                        "J'habite à...",
+                        "Je suis...",
+                        "Tu t'appelles comment ?",
+                        "Vous vous appelez comment ?",
+                        "Tu habites où ?",
+                        "Vous habitez où ?"
+                      ].map((sentence) => (
+                        <button
+                          key={sentence}
+                          onClick={() => playAudio(sentence)}
+                          className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-blue-500 bg-white dark:bg-slate-900 text-left transition"
+                        >
+                          <Volume2 className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                          <span className="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm">{sentence}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Content card Footer (Back/Next arrows) */}
+            <div className="bg-slate-50 dark:bg-slate-900/50 px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white disabled:opacity-40"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Précédent</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(11, prev + 1))}
+                disabled={currentPage === 11}
+                className="flex items-center gap-2 text-xs md:text-sm font-bold text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 disabled:opacity-40"
+              >
+                <span>Suivant</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+          </div>
+
+          {/* Quick Info Box Bottom */}
+          <div className="mt-8 flex items-center justify-center gap-2 text-xs text-slate-400">
+            <span>Créé pour l'apprentissage du Français Langue Étrangère (FLE) — A1.1</span>
+          </div>
+
+        </main>
+      </div>
+
+    </div>
+  );
+}
